@@ -81,6 +81,7 @@
       as="style"
       href="{{ 'inaithiram.css' | asset_url }}"
     >
+    {{'test.css' | asset_url | stylesheet_tag }}
     {{ 'bootstrap.min.css' | asset_url | stylesheet_tag }}
     {{ 'owl-theme.min.css' | asset_url | stylesheet_tag }}
     {{ 'owl.carousel.min.css' | asset_url | stylesheet_tag }}

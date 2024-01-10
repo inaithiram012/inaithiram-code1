@@ -1,0 +1,77 @@
+{% comment %}
+  {% for image in product.images %}
+  {{ image | image_url: width: master | image_tag: width: '100%' }}
+  {% endfor %}
+{% endcomment %}
+
+{% assign product = product %}
+{% assign selected_product = product.selected_or_first_available_variant %}
+{% assign product_title = product.title %}
+{% assign product_price = selected_product.price | divided_by: 100 %}
+{% assign compare_price = selected_product.compare_at_price | divided_by: 100 %}
+{% assign save_rupees = compare_price | minus: product_price %}
+{% assign save_percentage = save_rupees | times: 100 | divided_by: compare_price %}
+{% assign promotion_msg = product.metafields.custom.promotion %}
+{% assign coupon = product.metafields.custom.coupon | split: '|' %}
+{% assign coupon_code = coupon[0] %}
+{% assign coupon_percent = coupon[1] %}
+{% assign quick_shipping = product.metafields.custom.shipping %}
+
+<div class="inaithiram-product-grid">
+  <div
+    class="inaithiram-wishlist"
+  >
+    <div class="uwl-btn"></div>
+  </div>
+  {% if quick_shipping %}
+    <div class="quickship">
+      <img
+        src="https://cdn.shopify.com/s/files/1/0614/3963/9609/files/Express_Dispatch.gif"
+        alt="express dispatch"
+        height="32px"
+      >
+    </div>
+  {% endif %}
+  <div class="inaithiram-image-grid">
+    {{ product.featured_image | image_url: width: master | image_tag: width: '100%' }}
+  </div>
+  <div class="ipg-details">
+    <h2 class="inaithiram-product-title">{{ product_title }}</h2>
+    <div class="ipg-stock_rating">
+      <div class="ipg-rating"></div>
+      <div class="ipg-stock">
+        {% render 'inaithiram-stock', selected_product: selected_product, stock_location: 'firstone' %}
+      </div>
+    </div>
+    <div class="ipg-price-info">
+      <ul>
+        <li class="ipg-current">{{ product_price }}</li>
+        <li class="ipg-compare">{{ compare_price }}</li>
+        <li>
+          <span>{{ save_percentage }}% Off</span>
+          | Save ₹{{ save_rupees }}
+        </li>
+      </ul>
+    </div>
+    <div>
+      {% if promotion_msg %}
+        {{ promotion_msg }} |
+      {% endif %}
+      {% if coupon %}
+        Use {{ coupon_code }} & Get Extra {{ coupon_percent }}% Off
+      {% endif %}
+    </div>
+    <div class="ipg-action">
+      <ul>
+        <li><input type="checkbox" name="addCompare"> Add to Compare</li>
+        <li>
+          <i class="bi bi-eye-fill"></i>
+        </li>
+        <li>
+          Add to Cart
+          <i class="bi bi-cart-fill"></i>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

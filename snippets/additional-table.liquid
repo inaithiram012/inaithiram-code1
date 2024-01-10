@@ -1,0 +1,22 @@
+<div class="container p-0 additional-table">
+  <h4 class="my-2">{{ table_title }}</h4>
+  <div class="container">
+    <div class="row">
+      {% for image in table_images %}
+      <div class="col-lg-3 col-12 p-3 border">
+        <div class="text-center mb-3">
+          {{ image | image_url: width: 1080 | image_tag: width: '100%' }}
+        </div>
+        {% assign content = table_content[forloop.index0] | split: "|" %}
+        {% assign list_items = content[1] | split: "@" %}
+        <h6>{{ content[0] }}</h6>
+        <ul>
+          {% for list_item in content[1] %}
+            <li>{{ list_item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

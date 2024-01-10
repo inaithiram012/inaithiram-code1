@@ -1,0 +1,80 @@
+<div class="container-fluid four-gallery">
+  <div class="row g-0">
+    <div class="col-3 position-relative overflow-hidden internest-gallery">
+      <a href="{{ section.settings.internest_gallery_url_1 }}">
+        <img src="{{ section.settings.internest_gallery_1 | image_url: width: 450 }}" width="100%" height="100%" loading="lazy" alt="quality-matearial-handling-equipement">
+      </a>
+    </div>
+    <div class="col-3 position-relative overflow-hidden internest-gallery">
+      <a href="{{ section.settings.internest_gallery_url_2 }}">
+        <img src="{{ section.settings.internest_gallery_2 | image_url: width: 450 }}" width="100%" height="100%" loading="lazy" alt="quality-matearial-handling-equipement">
+      </a>
+    </div>
+    <div class="col-3 position-relative overflow-hidden internest-gallery">
+      <a href="{{ section.settings.internest_gallery_url_3 }}">
+        <img src="{{ section.settings.internest_gallery_3 | image_url: width: 450 }}" width="100%" height="100%" loading="lazy" alt="quality-matearial-handling-equipement">
+      </a>
+    </div>
+    <div class="col-3 position-relative overflow-hidden internest-gallery">
+      <a href="{{ section.settings.internest_gallery_url_4 }}">
+        <img src="{{ section.settings.internest_gallery_4 | image_url: width: 450 }}" width="100%" height="100%" loading="lazy" alt="quality-matearial-handling-equipement">
+      </a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Inaithiram Gallery4",
+  "settings": [
+    {
+     "type":"image_picker" ,
+     "id":"internest_gallery_1",
+     "label":"Image 1"
+    },
+    {
+     "type":"url" ,
+     "id":"internest_gallery_url_1",
+     "label":"Text 1"
+    },
+    {
+     "type":"image_picker" ,
+     "id":"internest_gallery_2",
+     "label":"Image 2"
+    },
+    {
+     "type":"url" ,
+     "id":"internest_gallery_url_2",
+     "label":"Text 2"
+    },
+    {
+     "type":"image_picker" ,
+     "id":"internest_gallery_3",
+     "label":"Image 3"
+    },
+    {
+     "type":"url" ,
+     "id":"internest_gallery_url_3",
+     "label":"Text 3"
+    },
+    {
+     "type":"image_picker" ,
+     "id":"internest_gallery_4",
+     "label":"Image 4"
+    },
+    {
+     "type":"url" ,
+     "id":"internest_gallery_url_4",
+     "label":"Text 4"
+    }
+  ],
+  "presets":[
+    {
+      "name":"Inaithiram Gallery 4Col"
+    }
+  ]
+}
+{% endschema %}
+
+{% javascript %}
+{% endjavascript %}

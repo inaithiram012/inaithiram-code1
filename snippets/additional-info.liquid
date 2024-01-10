@@ -1,0 +1,17 @@
+<div class="container my-2">
+  {% for additionals in additional_images %}
+    <div class="row align-items-center py-4">
+      <div class="col-lg-3 col-12">
+        {{ additionals | image_url: width: 1080 | image_tag: width: '100%' }}
+      </div>
+      <div class="col-lg-9 col-12">
+        {% assign content = additional_content[forloop.index0] | split: '|' %}
+        <h5>{{ content[0] }}</h5>
+        {% assign paragraph = content[1] | split: '@' %}
+        {% for text in paragraph %}
+          <p>{{ text }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>

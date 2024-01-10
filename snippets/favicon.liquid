@@ -1,0 +1,6 @@
+{% if settings.favicon_dark != blank %}
+  <link rel="shortcut icon" href="{{ settings.favicon_dark | img_url: '32x32' }}"  media="(prefers-color-scheme: dark)" type="image/png">
+{% endif %}
+{% if settings.favicon_light != blank %}
+  <link rel="shortcut icon" href="{{ settings.favicon_light | img_url: '32x32' }}"  media="(prefers-color-scheme: light)" type="image/png">
+{% endif %}

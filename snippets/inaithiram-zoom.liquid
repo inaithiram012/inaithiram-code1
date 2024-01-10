@@ -1,0 +1,39 @@
+<div class="inaithiram-product-zoom">
+  <div class="ig-sidebar">
+    <ul>
+      {% for media in product.media %}
+        <li class="product-media">
+          {% if media.media_type == 'video' or media.media_type == 'external_video' %}
+            {% render 'icon-library', id: 'icon-play-thumb' %}
+          {% elsif media.media_type == 'model' %}
+            {% render 'icon-library', id: 'icon-model-thumb' %}
+          {% endif %}
+          {{ media | image_url: width: 250 | image_tag: width: 75 }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="inaithiram-zoom-area">
+    <ul class="detail_media_list">
+      {% for media in product.media %}
+        {% case media.media_type %}
+          {% when 'image' %}
+            <li class="detailed_media">
+              {{ media | image_url: width: master | image_tag: width: '640x' }}
+            </li>
+          {% when 'external_video' %}
+            <li class="detailed_media">
+              {{ media | external_video_tag: width: '720x', height: '405x' }}
+            </li>
+          {% when 'video' %}
+            <li class="detailed_media">
+              {{ media | video_tag: width: '720x', height: '405x', controls: true, muted: true }}
+            </li>
+        {% endcase %}
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="gallery-close-button">
+    {% render 'icon-close' %}
+  </div>
+</div>

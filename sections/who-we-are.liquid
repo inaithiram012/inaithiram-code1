@@ -1,0 +1,48 @@
+<div class="about-container">
+  <h2>{{ page.title }}</h2>
+  <div class="about-content">
+    {{ section.settings['about-inaithiram'] }}
+  </div>
+</div>
+<div class="card-container">
+  {% for block in section.blocks %}
+    <div class="about-card">
+      <h4>{{ block.settings.card_title }}</h4>
+      <p>{{ block.settings.card_content }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+ {
+	"name": "Who we are",
+	"tag": "section",
+	"class": "about-inaithiram container",
+	"settings": [{
+			"type": "header",
+			"content": "About Us Content"
+		},
+		{
+			"type": "richtext",
+			"id": "about-inaithiram",
+			"label": "Few points about inaithiram"
+		}
+	],
+	"blocks": [{
+			"name": "Card",
+			"type": "card",
+			"settings": [{
+					"type": "text",
+					"id": "card_title",
+					"label": "Card Title"
+				},
+				{
+					"type": "textarea",
+					"id": "card_content",
+					"label": "Card Content"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

@@ -1,0 +1,38 @@
+<div class="inaithiram-chat-icon">
+  {% render 'icon-chat' %}
+</div>
+<a href='https://api.whatsapp.com/send/?phone={{shop.phone}}&text={{shop.url}}{{request.path}}%0D%0A%0D%0AHi%2C%0D%0A' class="inaithiram-whatsapp" target="_blank">
+  {% render 'icon-whatsapp' %}
+</a>
+<div class="tawkto-container">
+  <!-- Start of Tawk.to Script -->
+  <script type="text/javascript" onload>
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/641bff7d4247f20fefe781b3/1gs6ls1d0';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+    <!--End of Tawk.to Script-->
+    window.Tawk_API.onLoad = function(){
+      window.Tawk_API.hideWidget();
+    };
+    Tawk_API.customStyle = {
+      visibility: {
+        desktop: {
+          xOffset: 10,
+          yOffset: 90,
+          position: 'br'
+        },
+        mobile: {
+          xOffset: 10,
+          yOffset: 90,
+          position: 'br'
+        }
+      }
+    }
+  </script>
+</div>

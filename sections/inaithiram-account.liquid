@@ -1,0 +1,169 @@
+{% comment %} Main Section {% endcomment %}
+<section
+  class="    container account-section"
+  id="account-main"
+  `
+>
+  <h2 class="account-section-title">Your Account</h2>
+  <div class="account-boxes">
+    <a href="/account?type=order">
+      <div class="account-menu">
+        <div class="account-menu-image-container">
+          {% render 'icon-orders' %}
+        </div>
+        <div>
+          <h2 class="info-block-title">Your Orders</h2>
+          <p>Track, return or buy things again</p>
+        </div>
+      </div>
+    </a>
+    <a href="/account?type=personal-information">
+      <div class="account-menu">
+        <div class="account-menu-image-container">
+          {% render 'icon-information' %}
+        </div>
+        <div>
+          <h2 class="info-block-title">Personal Information</h2>
+          <p>Manage your personal information, including phone numbers and email address where you can be contacted.</p>
+        </div>
+      </div>
+    </a>
+    <a href="{{routes.account_addresses_url}}">
+      <div class="account-menu">
+        <div class="account-menu-image-container">
+          {% render 'icon-map' %}
+        </div>
+        <div>
+          <h2 class="info-block-title">Your Addresses</h2>
+          <p>Edit addresses for orders and gifts</p>
+        </div>
+      </div>
+    </a>
+    <a href="/pages/contact-us">
+      <div class="account-menu">
+        <div class="account-menu-image-container">
+          {% render 'icon-contact' %}
+        </div>
+        <div>
+          <h2 class="info-block-title">Contact Us</h2>
+        </div>
+      </div>
+    </a>
+    <a href="/apps/wishlist">
+      <div class="account-menu">
+        <div class="account-menu-image-container">
+          {% render 'icon-heart' %}
+        </div>
+        <div>
+          <h2>Wishlist</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+{% comment %} Order Section {% endcomment %}
+<section class="container account-section" id="account-orders">
+  <div class="pb-5">
+    <a href="{{routes.account_url}}">
+      <span>{% render 'icon-right' %} </span>
+      Back to Menu</a
+    >
+  </div>
+  <h2 class="mb-2">Your Orders</h2>
+  {% comment %}
+  <header class="order-menu">
+    <ul>
+      <li><a href="/" class="active">Orders</a></li>
+      <li><a href="/">Not Yet Shipped</a></li>
+      <li><a href="/">Cancelled Orders</a></li>
+    </ul>
+  </header>
+  {% endcomment %}
+  <div class="order-lists">
+    {% render 'order-item' for customer.orders as order %}
+  </div>
+</section>
+{% comment %} Account Information Section {% endcomment %}
+<section class="container account-section" id="account-information">
+  <div class="pb-5">
+    <a href="{{routes.account_url}}">
+      <span>{% render 'icon-right' %} </span>
+      Back to Menu</a
+    >
+  </div>
+  <h2 class="account-section-title">Personal Information</h2>
+  <div class="customer-information">
+    <div class="info-block-container">
+      <div class="info-text-wrapper">
+        <p class="info-block-title">Name:</p>
+        <p class="info-block-content">
+          {%- if customer.email -%}
+            {{ customer.name }}
+          {%- else -%}
+            N/A
+          {%- endif -%}
+        </p>
+      </div>
+      <div class="info-icon-wrapper">
+        <i class="bi bi-person-circle"></i>
+      </div>
+    </div>
+    <div class="info-block-container">
+      <div class="info-text-wrapper">
+        <p class="info-block-title">E-mail:</p>
+        <p class="info-block-content">
+          {%- if customer.email -%}
+            {{ customer.email }}
+          {%- else -%}
+            N/A
+          {%- endif -%}
+        </p>
+      </div>
+      <div class="info-icon-wrapper">
+        <i class="bi bi-envelope-fill"></i>
+      </div>
+    </div>
+    <div class="info-block-container">
+      <div class="info-text-wrapper">
+        <p class="info-block-title">Primary Mobile Number:</p>
+        <p class="info-block-content">
+          {%- if customer.default_address.phone -%}
+            {{ customer.default_address.phone }}
+          {%- else -%}
+            N/A
+          {%- endif -%}
+        </p>
+      </div>
+      <div class="info-icon-wrapper">
+        <i class="bi bi-phone-fill"></i>
+      </div>
+    </div>
+    <div class="info-block-container">
+      <div class="info-text-wrapper">
+        <p class="info-block-title">GST Number</p>
+        <p class="info-block-content">
+          {%- if customer.metafields.custom.gst_number -%}
+            {{ customer.metafields.custom.gst_number }}
+          {%- else -%}
+            N/A
+          {%- endif -%}
+        </p>
+      </div>
+      <div class="info-icon-wrapper">
+        {% render 'icon-invoice' %}
+      </div>
+    </div>
+    <div class="info-block-container">
+      <div class="info-text-wrapper">
+        <p class="info-block-title">Accept Marketing:</p>
+        <p class="info-block-content">
+          {%- if customer.accepts_marketing -%}Yes{%- else -%}No{%- endif -%}
+        </p>
+      </div>
+      <div class="info-icon-wrapper">
+        {% render 'icon-news' %}
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{{ 'inaithiram-account.js' | asset_url }}" defer></script>

@@ -1,0 +1,61 @@
+<section class="inaithiram-testimonial">
+  <h2 class="custom-text-heading">{{ section.settings['testimonial-heading'] }}</h2>
+  <div class="owl-carousel owl-theme">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'inaithiram-testimonial' %}
+          <div class="item testimonial-single">
+            <p class="testimonial__text">{{ block.settings['testimonial-content'] }}</p>
+            <p class="testimonial__author">{{ block.settings['testimonial-author'] }}</p>
+          </div>
+      {% endcase %}
+    {% endfor %}
+  </div>
+  {% if section.settings['testimonial-page'].url %}
+  <div class="testimonial-btn-container text-center mt-5">
+    <div class="testimonial-button-wrapper">
+      <a class="testimonial-button" href="{{ section.settings['testimonial-page'].url }}" target="_blank">View all Testimonials</a>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% schema %}
+{
+  "name": "Inaithiram Testimonial",
+  "settings": [
+    {
+      "type": "text",
+      "id": "testimonial-heading",
+      "label": "Heading"
+    },
+    {
+      "type": "page",
+      "id": "testimonial-page",
+      "label": "Testimonial Page"
+    }
+  ],
+  "blocks":[
+    {
+      "name": "Testimonial",
+      "type": "inaithiram-testimonial",
+      "settings": [
+        {
+          "type": "text",
+          "id": "testimonial-author",
+          "label": "Testimonial Author"
+        },
+        {
+          "type": "textarea",
+          "id": "testimonial-content",
+          "label": "Testimonial Content"
+        }
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"Inaithiram Testimonial"
+    }
+  ]
+}
+{% endschema %}

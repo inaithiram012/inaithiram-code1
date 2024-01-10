@@ -1,0 +1,29 @@
+{% assign features = table_data | newline_to_br | split: '<br />' %}
+{% if features != empty %}
+  <div class="my-4">
+    <h4 class="mb-2 description-title">{{ table_title }}</h4>
+    <div class="more-container">
+      <div class="table-responsive {% if more_enable %} more-enabled {% endif %}">
+        <table class="table inaithiram-table">
+          <tbody>
+            {% for feature in features %}
+              <tr>
+                {% assign lines = feature | split: '|' %}
+                {% for line in lines %}
+                  {% if forloop.first %}
+                    <th class="table-secondary">{{- line | strip_newlines | strip_html -}}</th>
+                  {% else %}
+                    <td>{{ line | strip_newlines | strip_html }}</td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if more_enable %}
+        <button class="mt-2 ism-button"><span>See more</span> <i class="bi bi-chevron-down"></i></button>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}

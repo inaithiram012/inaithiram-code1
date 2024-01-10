@@ -1,0 +1,47 @@
+{%- assign banners = product.metafields.custom.product_banner.value -%}
+{%- assign banners_title = product.metafields.custom.banners_title | newline_to_br | split: '<br />' -%}
+{% if banners or banners_title != empty %}
+  <section class="container">
+    <div class="inaithiram-banner">
+      <h3 class="mb-3">{{ section.settings.banner_section_title }}</h3>
+      <div class="row">
+        {% for banner in banners %}
+          <div class="col-lg-4 col-12">
+            <h5>{{ banners_title[forloop.index0] }}</h5>
+            {% if banner.media_type == 'video' %}
+              {{
+                banner
+                | video_tag:
+                  autoplay: false,
+                  loop: false,
+                  muted: false,
+                  controls: true,
+                  image_size: '100%',
+                  width: '100%'
+              }}
+            {% elsif banner.media_type == 'image' %}
+              {{ banner | image_url: width: '720px' | image_tag: width: '100%' }}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}
+{% schema %}
+{
+  "name": "Inaithiram Banners",
+  "settings": [
+    {
+      "type": "text",
+      "id": "banner_section_title",
+      "label": "Banner Section Title"
+    }
+  ],
+  "presets":[
+    {
+      "name": "Product Video / Banner"
+    }
+  ]
+}
+{% endschema %}

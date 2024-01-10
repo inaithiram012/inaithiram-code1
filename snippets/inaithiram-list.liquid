@@ -1,0 +1,16 @@
+{%- assign lists = list_content | strip_html | newline_to_br | split: '<br />' -%}
+{% if lists != empty %}
+<div class="my-4">
+  {% if list_title %}
+    <h4 class="description-title">{{ list_title }}</h4>
+  {% endif %}
+  <div class="more-container">
+    <ul class="more-enabled mb-1">
+      {% for list in lists %}
+        <li class="mb-1">{{ list }}</li>
+      {% endfor %}
+    </ul>
+    <button class="ism-button"><span>See more</span> <i class="bi bi-chevron-down"></i></button>
+  </div>
+</div>
+{% endif %}

@@ -1,0 +1,121 @@
+{% if customer %}
+  <p class="inaithiram-delivery-address">
+    <i class="bi bi-geo-alt"></i>
+    <span class="deliver-here"
+      >Deliver to {{ customer.default_address.zip }} - {{ customer.default_address.city -}}
+    </span>
+  </p>
+{% else %}
+  <p class="inaithiram-delivery-address">
+    <i class="bi bi-geo-alt"></i> <span class="deliver-here">Select delivery location</span>
+  </p>
+{% endif %}
+<p class="mt-2 mb-0" data-deliver-message></p>
+<script>
+   
+  window.onload = () => {
+    
+    const deliverMsg = document.querySelectorAll('p[data-deliver-message]');
+    const delAddress = document.querySelectorAll('.inaithiram-delivery-address');
+    const selectAddress = document.querySelector('.select-address-overlay');
+    const delOverlay = document.querySelector('.address-bg-overlay');
+    const chooseAddress = document.querySelectorAll('.list-customer-address');
+    const getPin = document.querySelector('.delivery-button');
+    const delHere = document.querySelectorAll('.deliver-here');
+    let token = "{{shop.metafields.shiprocket.shiprocket_token}}";
+    let delCheck = false;
+    let pickup_code = {{shop.address.zip}};
+    let delivery_postcode = {% if customer.default_address.zip %} {{customer.default_address.zip}} {% else %} null {% endif %};
+    let cod = 1;
+    let weight = {{product.selected_or_first_available_variant.weight}}/1000;
+
+    getPin.addEventListener('click', () => {
+      const typedPin = document.querySelector('.delivery-pincode');
+      delivery_postcode = typedPin.value;
+      checkService();
+      selectAddress.classList.remove('show-address');
+    });
+    
+    chooseAddress.forEach(address => {
+      address.addEventListener('click', ()=> {
+        delivery_postcode = address.getAttribute('data-customer-pincode');
+        checkService();
+        selectAddress.classList.remove('show-address');
+      });
+    });
+
+    delOverlay.addEventListener('click', ()=>{
+      selectAddress.classList.remove('show-address');
+    });
+    delAddress.forEach(item => {
+      item.addEventListener('click', ()=>{
+        selectAddress.classList.add('show-address');
+      });
+    });
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    xhr.onreadystatechange = function () {
+      if (this.readyState === 4) {
+        const result =  JSON.parse(this.responseText);
+        if(result.token){
+          token = result.token;
+          if(delivery_postcode != null){
+            delCheck = true;
+            checkService(); 
+          }
+        }
+        if(delCheck && result.data){
+          const suggestId = result.data.recommended_courier_company_id;
+          const availableServices = result.data.available_courier_companies;
+          const suggestedCompany = availableServices.find(item => item.rate === Math.min(...availableServices.map(item => item.rate)));          
+          if(suggestedCompany){
+            deliverMsg.forEach(text => {
+              text.innerHTML = `<span class='del-available'>Delivery Available. Delivery Estimated on ${suggestedCompany.etd}</span>`;
+            });
+            delHere.forEach(text => {
+              text.innerText = `Deliver to ${suggestedCompany.postcode} - ${suggestedCompany.city}`;
+            });
+          }
+          
+          // result.data.available_courier_companies.forEach(item => {
+          //   if(item.courier_company_id == suggestId){
+          //     deliverMsg.forEach(text => {
+          //       text.innerHTML = `<span class='del-available'>Delivery Available. Delivery Estimated on ${item.etd}</span>`;
+          //     });
+          //     delHere.forEach(text => {
+          //       text.innerText = `Deliver to ${item.postcode} - ${item.city}`;
+          //     });
+          //   }
+          // });
+        }
+        else if(delCheck && !result.data){
+          deliverMsg.forEach(text => {
+                text.innerHTML = `<span class='del-unavail'>${result.message}</span>`;
+          });
+          delHere.forEach(text => {
+                text.innerText = `Deliver to ${delivery_postcode}`;
+              });
+        }
+      }
+    };
+        
+    function checkService(){
+      delCheck = true;
+      xhr.open('GET', `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickup_code}&delivery_postcode=${delivery_postcode}&cod=${cod}&weight=${weight}`);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+      xhr.send();
+    }
+    
+const key = "rzp_live_uisiW4eOAU6zHy"; //Replace it with your Test Key ID generated from the Razorpay Dashboard
+
+const widgetConfig = {
+	"key": key,
+	"amount": {{ product.selected_or_first_available_variant.price }},
+};
+const rzpAffordabilitySuite = new RazorpayAffordabilitySuite(widgetConfig);
+rzpAffordabilitySuite.render();
+
+  };
+
+</script>

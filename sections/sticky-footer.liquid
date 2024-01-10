@@ -1,0 +1,52 @@
+{% assign product_image = product.featured_image %}
+{% assign price = product.selected_or_first_available_variant.price %}
+{% assign sku = product.selected_or_first_available_variant.sku %}
+{% assign model_numbers = product.metafields.custom.model_number.value %}
+
+<div class="sticky-footer" id="sticky-footer">
+  <div class="featured-image__container">
+    <img src="{{ product_image | image_url : width: master }}" width="100px">
+  </div>
+  <div class="inaithiram-product_title">
+    <h4 class="mb-0">{{ product.title | truncatewords: 8, "..." }}</h4>
+  </div>
+  <div class="inaithiram-price p-0">
+    <div class="ip_current">
+      <h3 class="m-0" data-inaithiram-price>{{ price | money_with_currency }}</h3>
+      <p class="m-0">Inclusive of all taxes</p>
+    </div>
+  </div>
+  {% for option in product.options_with_values %}
+    {% assign option_name = option.name | downcase %}
+    {% case option_name %}
+      {% when 'color' %}
+        {% assign position = option.position | minus: 1 %}
+        {% assign bgcolor = product.selected_or_first_available_variant.options[position] %}
+        {% render 'color-swatch', bgcolor: bgcolor, position: position, option: option %}
+    {% endcase %}
+  {% endfor %}
+  {% render 'option-selection' %}
+  {% render 'model-number', model_numbers: model_numbers %}
+  <div class="inaithiram_stock" data-inaithiram-stock>
+    {% render 'inaithiram-stock',
+      variant: product.variants,
+      selected_product: product.selected_or_first_available_variant,
+      stock_location: 'firstone'
+    %}
+  </div>
+  <div class="inaithiram-cart-buttons">
+    <button class="inaithiram_cart_add mb-2">Add to Cart</button>
+    <button class="inaithiram_cart_buy">Buy Now</button>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Sticky Footer",
+  "class": "inaithiram-sticky-footer",
+  "presets": [
+    {
+      "name": "Sticky Footer"
+    }
+  ]
+}
+{% endschema %}

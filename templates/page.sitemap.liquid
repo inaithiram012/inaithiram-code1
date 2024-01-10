@@ -1,0 +1,27 @@
+<section class="container py-5">
+  <h2 class="py-4">Collections</h2>
+  {% for collection in collections %}
+    {% unless collection.products_count == 0 %}
+      <h3>{{ collection.title | link_to: collection.url }}</h3>
+      <ul class="sitemap-list">
+        {% for product in collection.products %}
+          <li>{{ product.title | link_to: product.url }}</li>
+        {% endfor %}
+      </ul>
+    {% endunless %}
+  {% endfor %}
+
+  <h2 class="py-4">Pages</h2>
+  <ul class="sitemap-list">
+    {% for page in pages %}
+      <li>{{ page.title | link_to: page.url }}</li>
+    {% endfor %}
+  </ul>
+
+  <h2 class="py-4">Blogs</h2>
+  <ul class="sitemap-list">
+    {% for article in blogs['material-handling'].articles %}
+      <li>{{- article.title | link_to: article.url }}</li>
+    {% endfor %}
+  </ul>
+</section>

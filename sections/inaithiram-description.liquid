@@ -1,0 +1,162 @@
+{% assign description_banner = product.metafields.custom.description_banner.value %}
+{% assign description_images = product.metafields.custom.description_images.value %}
+{% assign description_caption = product.metafields.custom.description_caption | newline_to_br | split: '<br />' %}
+{% assign description_content = product.metafields.custom.description_content | newline_to_br | split: '<br />' %}
+{% assign product_brochure = product.metafields.custom.product_brochure.value %}
+{% assign technical = product.metafields.custom.additional_table %}
+{% assign specification = product.metafieldscustom.technical_details %}
+<section class="container product-tabs-container px-0">
+  <div class="product-tabs d-flex flex-row flex-wrap">
+    {% if description_images or product.description != empty %}
+      <a class="text-decoration-none tab-title" href="#product-description">
+        <h5 class="mb-0 py-1">Product Description</h5>
+      </a>
+    {% endif %}
+    {% if specification or technical %}
+      <a class="text-decoration-none tab-title" href="#product-specification">
+        <h5 class="mb-0 py-1">Detailed Product Specification | Technical Details</h5>
+      </a>
+    {% endif %}
+    {% if product_brochure %}
+      <a class="text-decoration-none tab-title" href="#product-catalogue">
+        <h5 class="mb-0 py-1">Download Product Catalogue</h5>
+      </a>
+    {% endif %}
+    <a class="text-decoration-none tab-title" href="#professional-faqs-block">
+      <h5 class="mb-0 py-1">FAQs</h5>
+    </a>
+    <a class="text-decoration-none tab-title" href="#judgeme_product_reviews">
+      <h5 class="mb-0 py-1">Reviews</h5>
+    </a>
+  </div>
+  {% if description_images or product.description != empty %}
+    <div class="inaithiram-product-description" id="product-description">
+      <h3 class="my-3">{{ section.settings['description-title'] }}</h3>
+      {% if product.description %}
+        <div class="mb-5 container">{{ product.description }}</div>
+      {% endif %}
+      {% if description_banner %}
+        <div class="mb-5 container">
+          {% render 'final-banner', final_banner: description_banner %}
+        </div>
+      {% endif %}
+      {% if description_images %}
+        <div class="container content-div px-0" id="details">
+          <div class="container my-3 border">
+            <div class="row">
+              <div class="col-lg-2 mt-3 d-none d-lg-block border-end">
+                <div class="container py-4 scroll-column">
+                  <div class="row">
+                    {% for sidebar in description_images %}
+                      <div class="col-lg-12 col-3 text-center darken item-sidebar">
+                        {{ sidebar | image_url: width: 1080 | image_tag: width: '100%' }}
+                        <p>{{ description_caption[forloop.index0] }}</p>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-10 col-12">
+                <div class="container description-container">
+                  {% for image in description_images %}
+                    <div class="row align-items-center py-4 sidebar-content activated">
+                      <div class="mb-3 col-lg-6 text-center col-12">
+                        {{ image | image_url: width: 1080 | image_tag: width: '100%' }}
+                      </div>
+                      {% assign heading_content = description_content[forloop.index0] | split: '|' %}
+                      <div class="col-lg-6 col-12">
+                        <h5>
+                          {{ heading_content[0] }}
+                        </h5>
+                        {% assign content_only = heading_content[1] | split: '@' %}
+                        {% for paracont in content_only %}
+                          <p>{{ paracont }}</p>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+{% if description_images %}
+  <script>
+        const tab = document.querySelectorAll('.tab-link');
+        const content = document.querySelectorAll('.content-div');
+        tab.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                tab.forEach((item) => {
+                    if (item.classList.contains('active')) {
+                        item.classList.remove('active');
+                    }
+                });
+                content.forEach((item) => {
+                    if (item.classList.contains('show')) {
+                        item.classList.remove('show');
+                    }
+                });
+                tab[index].classList.add('active');
+                content[index].classList.add('show');
+            });
+        });
+      const sideContent = document.querySelectorAll('.sidebar-content');
+      const sidebar = document.querySelectorAll('.item-sidebar');
+      sideContent.forEach(item => {
+      if(item.classList.contains('activated')){
+        item.classList.remove('activated');
+      }
+    });
+    sideContent[0].classList.add('activated');
+    sidebar.forEach(item => {
+      if(item.classList.contains('darken')){
+        item.classList.remove('darken');
+      }
+    });
+    sidebar[0].classList.add('darken');
+        sidebar.forEach((item, index) => {
+          item.addEventListener('mouseover', () => {
+          sidebar.forEach((item) => {
+          if (item.classList.contains('darken')) {
+            item.classList.remove('darken');
+          }
+        });
+        sideContent.forEach((item) => {
+          if (item.classList.contains('activated')) {
+            item.classList.remove('activated');
+          }
+        });
+          sidebar[index].classList.add('darken');
+          sideContent[index].classList.add('activated');
+        });
+      });
+  </script>
+{% endif %}
+{% schema %}
+{
+  "name": "Product Description",
+  "class": "product-description-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "description-title",
+      "label":"Description Section Title"
+    }
+  ],
+  "blocks":[
+    {
+      "name": "Banner With Text",
+      "type": "final-banner"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Description"
+    }
+  ]
+}
+{% endschema %}

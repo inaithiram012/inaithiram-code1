@@ -1,0 +1,80 @@
+<div class="order-item">
+  <header>
+    <div class="order-basic-info">
+      <div>
+        <p>
+          <strong>Order Placed</strong>
+        </p>
+        <p>{{ order.created_at | date: '%d %B %Y' }}</p>
+      </div>
+      <div>
+        <p>
+          <strong>Total</strong>
+        </p>
+        <p class="money">{{ order.total_price | money_with_currency }}</p>
+      </div>
+      <div>
+        <p>
+          <strong>Ship To:</strong>
+        </p>
+        <div class="order-shippedto">
+          <p class="shipped-name">
+            {{ order.shipping_address.name }}
+            {% render 'icon-chevron-down-small' %}
+          </p>
+          <div class="shipped-address">
+            <address>
+              {{ order.shipping_address | format_address }}
+            </address>
+          </div>
+        </div>
+      </div>
+      <div>
+        {% assign created_at = order.created_at | date: '%s' %}
+        {% assign current_time = 'now' | date: '%s' %}
+        {% assign time_duration = current_time | minus: created_at %}
+        {% assign express_shipping_seconds = 86400 %}
+        {% assign normal_shipping_seconds = 172800 %}
+        {% if order.fulfillment_status == 'fulfilled' %}
+          <p><strong>Fullfillment_status: </strong></p>
+          <p>
+            {{ order.fulfillment_status | capitalize }}
+          </p>
+        {% else %}
+          <p><strong>Dispatched In: </strong></p>
+          <p>
+            {% for shipping_method in order.shipping_methods %}
+              {% case shipping_method.title %}
+                {% when 'Free Shipping' %}
+                  {%- if time_duration <= normal_shipping_seconds -%}
+                    {% assign time_remaining = normal_shipping_seconds | minus: time_duration %}
+                    {{ time_remaining | divided_by: 86400 }} Days,
+                    {{ time_remaining | modulo: 86400 | divided_by: 3600 }} Hours,
+                    {{ time_remaining | modulo: 3600 | divided_by: 60 }} Minutes
+                  {%- endif -%}
+                {% when 'Express Shipping' %}
+                  {%- if time_duration <= express_shipping_seconds -%}
+                    {% assign time_remaining = express_shipping_seconds | minus: time_duration %}
+                    {{ time_remaining | divided_by: 86400 }} Days,
+                    {{ time_remaining | modulo: 86400 | divided_by: 3600 }} Hours,
+                    {{ time_remaining | modulo: 3600 | divided_by: 60 }} Minutes
+                  {%- endif -%}
+              {% endcase %}
+            {% endfor %}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+    <div>
+      <p>Order # {{ order.name }}</p>
+      <p>
+        {{ 'View order details' | link_to: order.customer_url }}
+        |
+        <a href="https://gst.webplanex.biz/invoice-email/?shop=inaithiram01.myshopify.com&order_id={{ order.id }}&type=original" target="_blank">Invoice</a>
+      </p>
+    </div>
+  </header>
+  <div>
+    {% render 'ordered-product' for order.line_items as line_item %}
+  </div>
+</div>

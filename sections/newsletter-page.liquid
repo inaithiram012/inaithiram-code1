@@ -1,0 +1,93 @@
+{% assign form_id = 'subscription-page' %}
+{% assign input_id = 'newsletter_email' %}
+{% assign newsletter_tags = 'prospect, newsletter' %}
+{% if section.settings.subscribe_image %}
+  <div class="subscribe-icon">
+    {{ section.settings.subscribe_image | image_url: width: master | image_tag }}
+  </div>
+{% else %}
+  <div class="subscribe-icon">
+    <img src="https://cdn.shopify.com/s/files/1/0614/3963/9609/files/photo_thumbnail.png" alt="photo-thumbnail">
+  </div>
+{% endif %}
+{% if section.settings.subscribe_title != empty %}
+  <h1>{{ section.settings.subscribe_title }}</h1>
+{% else %}
+  <h1>Let's stay in touch</h1>
+{% endif %}
+{% form 'customer', id: form_id %}
+  {% if form.posted_successfully? %}
+    <p class="newsletter-success">
+      {{ 'general.newsletter.success' | t }}
+    </p>
+  {% else %}
+    {% if section.settings.subscribe_content != empty %}
+      <p>{{ section.settings.subscribe_content }}</p>
+    {% else %}
+      <p>congue nisi vitae suscipit tellus mauris a diam maecenas sed enim ut</p>
+    {% endif %}
+    <div class="subscribe-form">
+      <input
+        type="hidden"
+        name="contact[tags]"
+        value="{{ newsletter_tags }}"
+      >
+      <label
+        class="visually-hidden"
+        for="{{ input_id }}"
+      >
+        {{ 'general.newsletter.placeholder' | t }}
+      </label>
+      <input
+        class="subscribe-email"
+        name="contact[email]"
+        id="{{ input_id }}"
+        type="email"
+        placeholder="{{ 'general.newsletter.placeholder' | t }}"
+        aria-label="{{ 'general.newsletter.placeholder' | t }}"
+      >
+      <button
+        class="page-subscribe-btn"
+        name="subscribe"
+        type="submit"
+      >
+        Subscribe
+      </button>
+    </div>
+  {% endif %}
+{% endform %}
+
+{% schema %}
+{
+  "name": "Subscribe Box",
+  "tag": "section",
+  "class": "subscribe-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "subscribe_image",
+      "label": "Subscribe Logo"
+    },
+    {
+      "type": "text",
+      "id": "subscribe_title",
+      "label": "Subscribe Title"
+    },
+    {
+      "type": "textarea",
+      "id": "subscribe_content",
+      "label": "Subscribe Content"
+    }
+  ]
+}
+{% endschema %}
+
+{% javascript %}
+  window.onload = function(){
+    const getURL = document.location.href.split('?')[1];
+    const params = new URLSearchParams(getURL);
+    const email = params.get('email');
+    const getmail = document.getElementById('newsletter_email');
+    getmail.value=email;
+  }
+{% endjavascript %}

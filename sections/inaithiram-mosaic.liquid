@@ -1,0 +1,156 @@
+<div class="mosaic-container">
+  {% if section.blocks.size == 5 %}
+    <div class="row">
+      <div class="col-lg-8 inaithiram-mosaic-image">
+        {% for block in section.blocks limit: 2 %}
+          {% if forloop.index <= 2 %}
+            <div class="inaithiram-mosaic-container">
+              <a href="{{ block.settings.shop-collections }}">
+                <div class="inaithiram-mosaic-container_image">
+                  {% if block.settings['promotion-mosaic'] %}
+                    {{-
+                      block.settings['promotion-mosaic']
+                      | image_url: width: master
+                      | image_tag:
+                      width: '100%',
+                      height: 'auto',
+                      class: 'banner-desktop',
+                      alt: 'quality-matearial-handling-equipement',
+                      loading: 'lazy'
+                    -}}
+                  {% endif %}
+                  {% if block.settings['promotion-mosaic_mobile'] %}
+                    {{-
+                      block.settings['promotion-mosaic_mobile']
+                      | image_url: width: master
+                      | image_tag:
+                        width: '100%',
+                        height: 'auto',
+                        class: 'banner-mobile',
+                        alt: 'quality-matearial-handling-equipement',
+                        loading: 'lazy'
+                    -}}
+                  {% endif %}
+                </div>
+              </a>
+              {% if block.settings['promotion-heading'] != empty or block.settings['promotion-content'] != empty %}
+                <div class="inaithiram-mosaic-content">
+                  <h2>{{ block.settings['promotion-heading'] }}</h2>
+                  <p>{{ block.settings['promotion-content'] }}</p>
+                  {% if block.settings['promotion-button'] != empty %}
+                    <a
+                      href="{{ block.settings.shop-collections }}"
+                      class="button-primary promo-block--button pxu-lia-element mdc-ripple-surface1 mdc-ripple-upgraded"
+                    >
+                      {{- block.settings['promotion-button'] -}}
+                    </a>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="col-lg-4 inaithiram-mosaic-image">
+        {% for block in section.blocks offset: 2 %}
+          <div class="inaithiram-mosaic-container">
+            <a href="{{ block.settings.shop-collections }}">
+              <div class="inaithiram-mosaic-container_image">
+                {% if block.settings['promotion-mosaic'] %}
+                  {{-
+                    block.settings['promotion-mosaic']
+                    | image_url: width: 600
+                    | image_tag:
+                      width: '100%',
+                      height: 'auto',
+                      class: 'banner-desktop',
+                      alt: 'quality-matearial-handling-equipement',
+                      loading: 'lazy'
+                  -}}
+                {% endif %}
+                {% if block.settings['promotion-mosaic_mobile'] %}
+                  {{-
+                    block.settings['promotion-mosaic_mobile']
+                    | image_url: width: 600
+                    | image_tag:
+                      width: '100%',
+                      height: 'auto',
+                      class: 'banner-mobile',
+                      alt: 'quality-matearial-handling-equipement',
+                      loading: 'lazy'
+                  -}}
+                {% endif %}
+              </div>
+            </a>
+            {% if block.settings['promotion-heading'] != empty or block.settings['promotion-content'] != empty %}
+              <div class="inaithiram-mosaic-content">
+                <h2>{{ block.settings['promotion-heading'] }}</h2>
+                <p>{{ block.settings['promotion-content'] }}</p>
+                {% if block.settings['promotion-button'] != empty %}
+                  <a
+                    href="{{ block.settings.shop-collections }}"
+                    class="button-primary promo-block--button pxu-lia-element mdc-ripple-surface1 mdc-ripple-upgraded"
+                  >
+                    {{- block.settings['promotion-button'] -}}
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Inaithriam Mosaic",
+  "settings": [],
+  "tag": "section",
+  "class": "inaithiram-custom-mosaic",
+  "blocks": [
+    {
+      "name": "Promotion Mosaic",
+      "type": "promotion-mosaic",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "promotion-mosaic",
+          "label": "Mosaic Image Desktop"
+        },
+        {
+          "type": "image_picker",
+          "id": "promotion-mosaic_mobile",
+          "label": "Mosaic Image Mobile"
+        },
+        {
+          "type": "text",
+          "id": "promotion-heading",
+          "label": "Promotion Title"
+        },
+        {
+          "type": "textarea",
+          "id": "promotion-content",
+          "label": "Promotion Content"
+        },
+        {
+          "type": "url",
+          "id": "shop-collections",
+          "label": "Collections Page"
+        },
+        {
+          "type": "text",
+          "id": "promotion-button",
+          "label": "Button Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Inaithiram Mosaic"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,177 @@
+{% assign product_bundle = product.metafields.custom.bundle.value %}
+{% assign bundled_product = product_bundle.products.value %}
+{% assign bundled_variant = product_bundle.specific_variant.value %}
+{% if product_bundle %}
+  <div class="bundle-section">
+    <form id="inaithiram-bundle">
+      <input type="hidden" name="min-qty" value="{{product_bundle.min_qty}}">
+      <input type="hidden" name="discount" value="{{product_bundle.discount.value | divided_by: 100 }}">
+      <div class="bundle-container">
+        {% assign total = 0 %}
+        <div class="product-bundle">
+          <input type="checkbox" name="my_bundle" class="bundle_checkbox" checked onclick="return false">
+          <div class="bundle-image">
+            {{ product.featured_image | image_url: width: master | image_tag: width: '100px' }}
+          </div>
+          <div class="bundle-content">
+            <p>{{ product.title }}</p>
+            <div class="bundle-input">
+              {% if product.variants.size > 1 %}
+                <select name="id">
+                  {% for variant in product.variants %}
+                    <option value="{{variant.id}}" data-bunlde-price="{{variant.price | divided_by: 100 }}">
+                      {% for option in variant.options %}
+                        {{ option -}}
+                        {%- unless forloop.last %} / {% endunless %}
+                      {% endfor %}
+                    </option>
+                  {% endfor %}
+                </select>
+                <input
+                  type="number"
+                  name="quantity"
+                  value="{{product.metafields.custom.min_order_qty}}"
+                  min="{{product.metafields.custom.min_order_qty}}"
+                  max="{{product.metafields.custom.max_order_qty}}"
+                >
+                {% for variant in product.variants %}
+                  <p
+                    class="money bundle-price {% if forloop.first %} current-price {% endif %}"
+                    data-bundle-productid="{{variant.id}}"
+                    data-bundle-price="{{variant.price | divided_by: 100 }}"
+                  >
+                    {{ variant.price | money_with_currency }}
+                  </p>
+                {% endfor %}
+              {% else %}
+                <input
+                  type="hidden"
+                  name="id"
+                  value="{{product.selected_or_first_available_variant.id}}"
+                  data-bundle-price="{{product.price | divided_by: 100 }}"
+                >
+                <input
+                  type="number"
+                  name="quantity"
+                  value="{{product.metafields.custom.min_order_qty}}"
+                  min="{{product.metafields.custom.min_order_qty}}"
+                  max="{{product.metafields.custom.max_order_qty}}"
+                >
+                <p
+                  class="money bundle-price current-price"
+                  data-bundle-price="{{product.selected_or_first_available_variant.price | divided_by: 100 }}"
+                >
+                  {{ product.selected_or_first_available_variant.price | money_with_currency }}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% for product in bundled_product %}
+          <div class="product-bundle">
+            <input type="checkbox" name="my_bundle" class="bundle_checkbox">
+            <div class="bundle-image">
+              {{ product.featured_image | image_url: width: master | image_tag: width: '100px' }}
+            </div>
+            <div class="bundle-content">
+              <p>{{ product.title }}</p>
+              <div class="bundle-input">
+                {% if product.variants.size > 1 %}
+                  <select name="id">
+                    {% for variant in product.variants %}
+                      <option value="{{variant.id}}" data-bunlde-price="{{variant.price | divided_by: 100 }}">
+                        {% for option in variant.options %}
+                          {{ option -}}
+                          {%- unless forloop.last %} / {% endunless %}
+                        {% endfor %}
+                      </option>
+                    {% endfor %}
+                  </select>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value="{{product.metafields.custom.min_order_qty}}"
+                    min="{{product.metafields.custom.min_order_qty}}"
+                    max="{{product.metafields.custom.max_order_qty}}"
+                  >
+                  {% for variant in product.variants %}
+                    <p
+                      class="money bundle-price {% if forloop.first %} current-price {% endif %}"
+                      data-bundle-productid="{{variant.id}}"
+                      data-bundle-price="{{variant.price | divided_by: 100 }}"
+                    >
+                      {{ variant.price | money_with_currency }}
+                    </p>
+                  {% endfor %}
+                {% else %}
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="{{product.selected_or_first_available_variant.id}}"
+                    data-bundle-price="{{product.price | divided_by: 100 }}"
+                  >
+                  <input
+                    type="number"
+                    name="quantity"
+                    value="{{product.metafields.custom.min_order_qty}}"
+                    min="{{product.metafields.custom.min_order_qty}}"
+                    max="{{product.metafields.custom.max_order_qty}}"
+                  >
+                  <p
+                    class="money bundle-price current-price"
+                    data-bundle-price="{{product.selected_or_first_available_variant.price | divided_by: 100 }}"
+                  >
+                    {{ product.selected_or_first_available_variant.price | money_with_currency }}
+                  </p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% assign price_now = product.selected_or_first_available_variant.price
+            | times: product.metafields.custom.min_order_qty
+          %}
+          {% assign total = total | plus: price_now %}
+        {% endfor %}
+        {% for variant in bundled_variant %}
+          <div class="product-bundle">
+            <input type="checkbox" name="my_bundle" class="bundle_checkbox">
+            <div class="bundle-image">
+              {{ variant.featured_image | image_url: width: master | image_tag: width: '100px' }}
+            </div>
+            <div class="bundle-content">
+              <p>{{ variant.product.title }}</p>
+              <p>{{ variant.title }}</p>
+              <div class="bundle-input">
+                <input
+                  type="hidden"
+                  name="id"
+                  value="{{product.selected_or_first_available_variant.id}}"
+                  data-bundle-price="{{product.price | divided_by: 100 }}"
+                >
+                <input
+                  type="number"
+                  name="quantity"
+                  value="{{variant.product.metafields.custom.min_order_qty }}"
+                  min="{{variant.product.metafields.custom.min_order_qty}}"
+                  max="{{variant.product.metafields.custom.max_order_qty}}"
+                >
+                <p class="money bundle-price current-price" data-bundle-price="{{variant.price | divided_by: 100 }}">
+                  {{ variant.price | money_with_currency }}
+                </p>
+              </div>
+            </div>
+          </div>
+          {% assign price_now = variant.price | times: product.metafields.custom.min_order_qty %}
+          {% assign total = total | plus: price_now %}
+        {% endfor %}
+        <p>Minimum {{ product_bundle.min_qty }} products needed to be selected to get this bunlde.</p>
+        <button type="submit" class="bundle-button" disabled>
+          Get this Bunlde @
+          <span class="bundle-total"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {{ 'inaithiram-bundle.js' | asset_url | script_tag }}
+{% endif %}

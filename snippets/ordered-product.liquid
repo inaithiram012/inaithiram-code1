@@ -1,0 +1,13 @@
+<div class="ordered-product">
+  <div class="product-image">
+    {{ line_item.image | image_url: width: master | img_tag }}
+  </div>
+  <div class="product-info">
+    <p>
+      <a href="{{line_item.url}}" class="ordered-product-title">{{ line_item.title }}</a>
+    </p>
+  </div>
+  <div class="review-container">
+    <a href="{{line_item.url}}/#judgeme_product_reviews" class="request-review">Write Product review</a>
+  </div>
+</div>

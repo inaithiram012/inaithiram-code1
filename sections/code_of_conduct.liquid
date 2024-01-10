@@ -1,0 +1,26 @@
+<h2>{{ section.settings.current_title }}</h2>
+<div class="about-div">
+{{ section.settings.about-inaithiram }}
+</div>
+{% schema %}
+ {
+	"name": "Code of Content",
+	"tag": "section",
+	"class": "code-conduct container",
+	"settings": [{
+			"type": "header",
+			"content": "Code of Conduct"
+		},
+        {
+          "type": "text",
+          "id": "current_title",
+          "label": "Code of Conduct Title"
+        },
+		{
+			"type": "richtext",
+			"id": "about-inaithiram",
+			"label": "Code of Conduct"
+		}
+	]
+}
+{% endschema %}

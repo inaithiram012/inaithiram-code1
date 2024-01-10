@@ -1,0 +1,6 @@
+<div class="compare-image-product mb-3">
+  {{ product.featured_image | image_url: width: master | image_tag: width: "250px" }}
+</div>
+<div>
+  <h6 class="compare-product-title">{{ product.title | link_to: product.url }}</h6>
+</div>

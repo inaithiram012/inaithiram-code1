@@ -1,0 +1,92 @@
+{% assign show_everypage = false %}
+{% assign show_homepageonly = false %}
+
+{% if section.settings.show_announcement %}
+  {% assign show_everypage = true %}
+{% endif %}
+
+{% if section.settings.show_announcement and section.settings.only_home and template == 'index' %}
+  {% assign show_homepageonly = true %}
+{% endif %}
+
+{% if show_homepageonly or show_everypage %}
+  <div
+    class="announcemnet-container"
+    style="background-color: {{ section.settings.background_color }}; color: {{ section.settings.body_color }}"
+  >
+    <div class="inaithiram-announcemnet">
+      <div class="contact">
+        <a href="tel:{{ section.settings.mobile }}" class="mobile_number"><i class="bi bi-telephone"></i> {{ section.settings.mobile }}</a> |
+        <a href="mailto:{{ section.settings.email }}"><i class="bi bi-envelope"></i> {{ section.settings.email }}</a>
+      </div>
+      {% if section.settings.announcement != empty %}
+        <div class="announcement">
+          <p class="promotion-slider">{{ section.settings.announcement }}</p>
+        </div>
+      {% endif %}
+      <div class="promotion">
+        <a href="{{ section.settings.bulkorder.url }}">Bulk Order</a> |
+        <a href="{{ section.settings.dealership.url }}">For Dealership / Distribution</a>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "only_home",
+      "label": "Show Only on Homepage",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "mobile",
+      "label": "Mobile Number",
+      "default": "#"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email ID",
+      "default": "#"
+    },
+    {
+      "type": "textarea",
+      "id": "announcement",
+      "label": "Announcement",
+      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    },
+    {
+      "type": "page",
+      "id": "bulkorder",
+      "label": "Bulk Order"
+    },
+    {
+      "type": "page",
+      "id": "dealership",
+      "label": "For Dealership/Distribution"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Baground Color",
+      "default": "#012166"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,55 @@
+{% comment %}
+  @params price, compare_price, unit_price, gst, save_percentage, save_rupees
+{% endcomment %}
+<div class="inaithiram-price">
+  <div class="ip_current">
+    <h3 class="m-0" data-inaithiram-price>{{ price | money_with_currency }}</h3>
+    <p class="m-0">Inclusive of all taxes</p>
+  </div>
+  {% if compare_price > price %}
+    <div class="ip_orginal">
+      <p class="m-0">
+        M.R.P.: ₹ <span data-inaithiram-compare> {{ compare_price | money_with_currency }}</span>
+      </p>
+    </div>
+  {% endif %}
+  <div class="ip_unit">
+    <table>
+      <tbody>
+        <tr>
+          <td>Unit Price</td>
+          <td class="px-1">= ₹</td>
+          <td class="text-end">
+            <span data-inaithiram-unitprice>{{ unit_price | money }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>{{ product.metafields.custom.tax_percentage | round }}% GST</td>
+          <td class="px-1">= ₹</td>
+          <td class="text-end">
+            <span data-inaithiram-gst>{{ gst | money }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% if compare_price > price %}
+    <div class="ip_save">
+      <div class="inaithiram-badge text-center">
+        <span data-inaithiram-percentage>{{ save_percentage }}</span>% Off | Save ₹
+        <span class="discount-rupees" data-inaithiram-rupees>{{ save_rupees | money_with_currency }}</span>
+      </div>
+    </div>
+  {% endif %}
+</div>
+<div class="offers-info">
+  <div class="offer-list">
+    <p class="mb-0">
+      Get Extra 5% off on your first order
+      <span class="view-offers" id="view-offers">View all Offers <i class="bi bi-chevron-down"></i></span>
+    </p>
+  </div>
+  <div class="razorpay-emi">
+   {% render 'razorpay-affordability' %}
+  </div>
+</div>

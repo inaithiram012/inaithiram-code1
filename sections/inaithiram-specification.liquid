@@ -1,0 +1,59 @@
+{% assign product_brochure = product.metafields.custom.product_brochure.value %}
+{% assign technical = product.metafields.custom.additional_table %}
+{% assign specification = product.metafieldscustom.technical_details %}
+{% if technical or specification %}
+  <h3 class="mt-3 mb-0" id="product-specification">{{ section.settings['product-specification'] }}</h3>
+  <div class="container">
+    <div class="row">
+      {% for block in section.blocks %}
+        <div class="col">
+          {% render 'inaithiram-table',
+            table_title: block.settings.table_title,
+            table_data: block.settings.table_data
+          %}
+          {% if product_brochure and forloop.last %}
+            <a href="{{ product_brochure.url }}" id="product-catalogue" class="catalogue-button" target="_blank"
+              >Download Brochure <i class="bi bi-cloud-arrow-down-fill"></i
+            ></a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+{% schema %}
+{
+  "name": "Product Specification",
+  "class": "container p-0",
+  "settings": [
+    {
+      "type":"text",
+      "id": "product-specification",
+      "label": "Section Title"
+    }
+  ],
+  "blocks":[
+    {
+      "type": "inaithiram-table",
+      "name": "Inaithiram Table",
+      "settings":[
+        {
+          "type": "text",
+          "id": "table_title",
+          "label": "Table Title"
+        },
+        {
+          "type": "richtext",
+          "id": "table_data",
+          "label": "Table Data"
+        }
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name": "Product Specification"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,23 @@
+<div class="select-address-overlay">
+  <div class="address-selection">
+    <h3>Choose your location</h3>
+    <div class="address-body">
+      {% if customer.addresses %}
+        <ul>
+          {% for address in customer.addresses %}
+            <li class="list-customer-address" data-customer-pincode="{{ address.zip }}">
+              <span class="address__name">{{ address.name }}</span>, {% if address.company %} {{ address.company }}, {% endif %}{{ address.address1 }}, {{ address.street }}, {{ address.address2 }}, {{ address.city }} - {{ address.zip }}
+            </li>
+          {% endfor %}
+        </ul>
+      <p class="text-center pin-seperator"><span>or enter an pincode</span></p>
+      {% endif %}
+      
+      <div class="manual-pin text-center">
+        <input type="text" name="customer-pin" placeholder="Enter the PIN Code" class="delivery-pincode"
+        ><button class="delivery-button">Submit</button>
+      </div>
+    </div>
+  </div>
+  <div class="address-bg-overlay"></div>
+</div>

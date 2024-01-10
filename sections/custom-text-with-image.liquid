@@ -1,0 +1,46 @@
+<section>
+<div class="container py-lg-4 py-md-3 py-sm-2  overflow-hidden">
+<div class="row align-items-center">
+  <div class="col-lg-8 col-md-8 col-sm-12 text-container">
+      <h2 class="custom-text-heading">{{ section.settings.heading_of_custom_text }}<span class="custom-dot">.</span></h2>
+    {{ section.settings.content_of_custom_text }}
+  </div>
+  <div class="col-lg-4 col-md-8 col-sm-12 text-center">
+    <img src={{ section.settings.image_of_custom_text | image_url: width: 196, height: 196 }} width="196px" height="196px" />
+  </div>
+</div>
+</div>
+  </section>
+{% schema %}
+  {
+    "name": "Image with Text 1",
+    "settings": [
+    {
+      "type":"text",
+      "id": "heading_of_custom_text",
+      "label": "Heading text"
+    },
+    {
+      "type":"richtext",
+      "id": "content_of_custom_text",
+      "label": "Enter your text"
+    },
+    {
+      "type":"image_picker",
+      "id": "image_of_custom_text",
+      "label": "Select your image"
+    }
+    ],
+    "presets": [
+      {
+        "name": "Custom text image"
+      }
+    ]
+  }
+{% endschema %}
+{% stylesheet %}
+.text-container p{
+  font-size: 16px;
+  line-height: 1.6em;
+}
+{% endstylesheet %}

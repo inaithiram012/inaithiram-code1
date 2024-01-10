@@ -1,0 +1,315 @@
+{% comment %}
+  @param product {Object}
+  The product object
+
+  @param layout {String}
+  The layout type
+
+  @param is_product_modal {Boolean}
+  Is the snippet being loaded in a Quick shop
+
+  @param is_featured_product {Boolean}
+  Is the snippet being loaded in a Featured product
+
+  @param onboarding {Boolean}
+  Is there onboarding content
+
+  @param show_dynamic_checkout_button {Boolean}
+  If true, show dynamic checkout button
+
+  @param select_first_available_variant {Boolean}
+  If true, select the first available variant
+
+  @param gallery_aspect_ratio {String}
+  This is the gallery aspect ratio, can be one of 'natural', 'short', 'square', 'long'
+
+  @param gallery_thumbnail_position {String}
+  This is the gallery thumbnail position, can be one of 'below', or 'left'
+
+  @param gallery_image_crop {Boolean}
+  Whether to crop images
+
+  @param gallery_hover_zoom {String}
+  This is the hover zoom setting, which is either 'disabled', 'separate', or 'replace'
+
+  @param gallery_click_to_zoom {String}
+  This is the click to zoom setting, which is either 'disabled', 'mobile', 'desktop', or 'always'
+{% endcomment %}
+
+{% assign onboarding = onboarding | default: false %}
+{% assign is_featured_product = is_featured_product | default: false %}
+
+{% assign product_selected = product.selected_or_first_available_variant %}
+{% assign sku = product_selected.sku %}
+{% assign price = product_selected.price %}
+{% assign compare_price = product_selected.compare_at_price %}
+{% assign gst_percentage = product.metafields.custom.tax_percentage | plus: 100 %}
+{% assign unit_price = price | times: 100 | divided_by: gst_percentage %}
+{% assign gst = price | minus: unit_price %}
+{% assign save_percentage = compare_price | minus: price | times: 100 | divided_by: compare_price %}
+{% assign save_rupees = compare_price | minus: price %}
+{% assign model_numbers = product.metafields.custom.model_number.value %}
+{% if product.metafields.custom.min_order_qty %}
+  {% assign min_qty = product.metafields.custom.min_order_qty %}
+{% else %}
+  {% assign min_qty = 1 %}
+{% endif %}
+{% if product.metafields.custom.max_order_qty %}
+  {% assign max_qty = product.metafields.custom.max_order_qty %}
+{% else %}
+  {% assign max_qty = 999999 %}
+{% endif %}
+
+{% comment %} Tiered Pricing List {% endcomment %}
+{% assign tiered_list = product.metafields.custom.tiered_pricing | newline_to_br | split: '<br />' %}
+
+{% comment %}
+  Create variable to use in HTML
+{% endcomment %}
+<article class="product--outer">
+  {% render 'inaithiram-gallery' %}
+
+  <div class="product-main">
+    <div class="product-details" data-product-details>
+      <!-- Current Working Area -->
+      <div class="container">
+        <div class="title-container">
+          <h2 class="product-title" data-inaithiram-produrl="{{ product.url }}">{{ product.title }}</h2>
+        </div>
+        <div class="product-basics {% unless product.variants.size > 1 %}border-bottom border-dark{% endunless %}">
+          <div class="product-brand">
+            <p class="m-0">
+              Brand:
+              <span class="product-vendor">{{ product.vendor | link_to_vendor }}</span>
+            </p>
+          </div>
+          <div>
+            {% render 'judgeme_widgets',
+              widget_type: 'judgeme_preview_badge',
+              jm_style: '',
+              concierge_install: false,
+              product: product
+            %}
+          </div>
+          <div>
+            SKU:
+            <span data-inaithiram-sku>{{ sku }}</span>
+          </div>
+          <div class="iv_stock">
+            {% render 'inaithiram-stock',
+              variant: product.variants,
+              selected_product: product.selected_or_first_available_variant,
+              stock_location: 'firstone'
+            %}
+          </div>
+        </div>
+        {% if product.variants.size > 1 %}
+          <div class="inaithiram-variants">
+            {% for option in product.options_with_values %}
+              {% assign option_name = option.name | downcase %}
+              {% case option_name %}
+                {% when 'color' %}
+                  {% assign position = option.position | minus: 1 %}
+                  {% assign bgcolor = product.selected_or_first_available_variant.options[position] %}
+                  {% render 'color-swatch', bgcolor: bgcolor, position: position, option: option %}
+              {% endcase %}
+            {% endfor %}
+            {% render 'option-selection' %}
+            {% render 'model-number', model_numbers: model_numbers %}
+            <div class="iv_stock">
+              {% render 'inaithiram-stock',
+                variant: product.variants,
+                selected_product: product.selected_or_first_available_variant,
+                stock_location: 'firstone'
+              %}
+            </div>
+          </div>
+        {% endif %}
+        <div class="inaithiram-price-section ms-0">
+          {% render 'inaithiram-price',
+            price: price,
+            compare_price: compare_price,
+            unit_price: unit_price,
+            gst: gst,
+            save_percentage: save_percentage,
+            save_rupees: save_rupees
+          %}
+        </div>
+        {% if tiered_list != empty %}
+          <div class="tiered-price-container">
+            {% render 'inaithiram-tiered', tiered_list: tiered_list %}
+          </div>
+        {% endif %}
+        <div class="feature-icon-container">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'inaithiram-special' %}
+                <div class="feature-icon my-2">
+                  <div class="icon-div">
+                    <img src="{{ block.settings.icon-image | image_url: height: 50 }}" alt="inaithiram-icon">
+                  </div>
+                  <p class="feature-icon-title text-center">{{ block.settings['icon-title'] }}</p>
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+        <section class="container mt-3">
+          {% for block in section.blocks %}
+            {% case block.type %}
+                {% comment %}
+                  {% when 'inaithiram-bundle' %}
+                   {% render 'inaithiram-bundle' %}
+                {% endcomment %}
+              {% when 'inaithiram-table' %}
+                {% render 'inaithiram-table',
+                  table_title: block.settings.table_title,
+                  table_data: block.settings.table_data,
+                  more_enable: true
+                %}
+              {% when 'inaithiram-list' %}
+                {% render 'inaithiram-list',
+                  list_title: block.settings.list_title,
+                  list_content: block.settings.list_content,
+                  more_enable: true
+                %}
+            {% endcase %}
+          {% endfor %}
+        </section>
+      </div>
+      {% if layout == 'layout--three-col' %}
+        <div class="product-form--alt" data-product-form-alt></div>
+      {% endif %}
+    </div>
+    <div className="orichiCampaignCustom" data-productid="6988842139705" data-campaignid="14382"></div>
+  </div>
+  <!-- Inaithiram 3rd col Start -->
+  <div class="inaithiram-column-three">
+    <div class="inaithiram_product_actions">
+      <div class="inaithiram-price pb-0">
+        <h3 class="mb-0" data-inaithiram-price>{{ price | money_with_currency }}</h3>
+      </div>
+      {% render 'inaithiram-list', list_content: product.metafields.custom.special_offers %}
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'delivery-location' %}
+            {% render 'delivery-location', email: block.settings.api_username, password: block.settings.api_password %}
+        {% endcase %}
+      {% endfor %}
+      <div class="iv_stock my-2">
+        {% render 'inaithiram-stock',
+          variant: product.variants,
+          selected_product: product.selected_or_first_available_variant,
+          stock_location: 'secondone'
+        %}
+      </div>
+      <form>
+        <div class="inaithiram_order_info">
+          <div class="d-flex align-items-center mb-3">
+            <label for="quantity_selector">Quantity</label>
+            <div class="quantityCounter">
+              <span class="quantityMinus">
+                {% render 'icon-minus' %}
+              </span>
+              <input
+                type="text"
+                id="quantity_selector"
+                class="quantity-selector"
+                value="{{- min_qty -}}"
+              >
+              <span class="quantityPlus">
+                {% render 'icon-plus' %}
+              </span>
+            </div>
+          </div>
+          <p class="quantity_helper">
+            Minimum Order Quantity:
+            {{- min_qty -}}
+          </p>
+        </div>
+        <div class="mb-3 text-center">
+          <button class="inaithiram_cart_add w-100">Add to Cart</button>
+        </div>
+        <div class="mb-3 text-center">
+          <button
+            class="inaithiram_cart_buy w-100"
+            {% if product.selected_or_first_available_variant.inventory_quantity == 0 %}
+              disabled="true"
+            {% endif %}
+          >
+            Buy Now
+          </button>
+        </div>
+      </form>
+      <div id="notifyme-button"></div>
+      <p class="trans-secure">
+        {% render 'icon-secure' %}
+        <span>Secure transaction</span>
+      </p>
+      <div class="customized-quote">
+        <p class="m-0">
+          Bulk Order: more than 10 Units <br>
+          <a href="{{ section.settings.bulkquote.url }}" class="customized-price-link">Get Customized Price Quote</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- Inaithiram 3rd col End -->
+</article>
+<!-- Toast Section Start -->
+<div class="toast-container position-fixed bottom-50 end-50 p-3">
+  <div
+    id="added_to_cart"
+    class="toast toast-success"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div class="toast-header">
+      <strong class="me-auto toast-success-title">Success!</strong>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="toast-body text-light">Product added to cart successfully!</div>
+  </div>
+</div>
+<!-- Toast Section End -->
+{% if tabs_below_product_gallery == true %}
+  {{ product_tabs }}
+{% endif %}
+
+<script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  const inaithiramVariant = {{product.variants | json}};
+  const defaultVariant = {{ product.selected_or_first_available_variant | json }};
+  const gst_percent = {{gst_percentage}}
+  const currOpt = {{product.options | json}};
+  const min_qty = {{- min_qty -}};
+  const max_qty = {{- max_qty -}};
+  const defOptions = {};
+  currOpt.forEach((item, index) => {
+    defOptions[`${item}`] = defaultVariant.options[index];
+  });
+
+
+
+
+
+
+
+
+
+</script>

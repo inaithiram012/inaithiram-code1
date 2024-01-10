@@ -1,0 +1,6 @@
+<div class="iv_sku">
+  {% for model_number in model_numbers %}
+    {% assign model_split = model_number | split: '|' %}
+    <span data-inaithiram-model="{{ model_split[0] }}">Model No. {{ model_split[1] }}</span>
+  {% endfor %}
+</div>

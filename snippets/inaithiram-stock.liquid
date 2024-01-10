@@ -1,0 +1,80 @@
+{% comment %}
+  @params
+  variant
+  stock_count: variant.inventory_quantity,
+  stock_threshold: settings.low_stock_threshold
+{% endcomment %}
+<!-- For Default Product -->
+{% assign stock_count = selected_product.inventory_quantity %}
+{% assign stock_threshold = settings.low_stock_threshold %}
+
+{% capture stock_level %}
+  {% if stock_count == 0 %}
+    <span class="text-danger">
+      {% if  stock_location == 'firstone' %}
+        Out of Stock
+      {% elsif stock_location == 'secondone' %}
+        Stock not available. Please visit later.
+      {% endif %}
+    </span>
+  {% elsif stock_count > stock_threshold %}
+    <span class="text-success">
+      {% if  stock_location == 'firstone' %}
+        In Stock
+      {% elsif stock_location == 'secondone' %}
+        Stock Available
+      {% endif %}
+    </span>
+  {% elsif stock_count <= stock_threshold  %}
+    <span class="text-warning">
+      {% if  stock_location == 'firstone' %}
+        Low Stock
+      {% elsif stock_location == 'secondone' %}
+        Hurry! Only few stocks are left.
+      {% endif %}
+    </span>
+  {% endif %}
+{% endcapture %}
+
+<span data-inaithiram-stock style="display: block;" data-inaithiram-variantid>
+  {{ stock_level }}
+</span>
+<!-- For Variants -->
+{% if variant %}
+  {% for variant in product.variants %}
+    {% assign stock_count = variant.inventory_quantity %}
+    {% assign stock_threshold = settings.low_stock_threshold %}
+
+    {% capture stock_level %}
+  {% if stock_count == 0 %}
+    <span class="text-danger">
+      {% if  stock_location == 'firstone' %}
+        Out of Stock
+      {% elsif stock_location == 'secondone' %}
+        Stock not available. Please visit later.
+      {% endif %}
+    </span>
+  {% elsif stock_count > stock_threshold %}
+    <span class="text-success">
+      {% if  stock_location == 'firstone' %}
+        In Stock
+      {% elsif stock_location == 'secondone' %}
+        Stock Available
+      {% endif %}
+    </span>
+  {% elsif stock_count <= stock_threshold  %}
+    <span class="text-warning">
+      {% if  stock_location == 'firstone' %}
+        Low Stock
+      {% elsif stock_location == 'secondone' %}
+        Hurry! Only few stocks are left.
+      {% endif %}
+    </span>
+  {% endif %}
+{% endcapture %}
+
+    <span data-inaithiram-stock data-inaithiram-variantid="{{ variant.id }}">
+      {{ stock_level }}
+    </span>
+  {% endfor %}
+{% endif %}

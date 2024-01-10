@@ -1,0 +1,107 @@
+<div class="contact-div">
+  <h2>{{ page.title }}</h2>
+  <div class="list-container">
+    {{ section.settings.paragraph }}
+  </div>
+</div>
+<div class="contact-div write-container">
+  <h2>{{ section.settings.write_us }}</h2>
+  {{ 'Feedback' | link_to: section.settings.feedback_url, class: "feedback-button" }}
+  <p>{{ section.settings.feedback_content }}</p>
+</div>
+<div class="location-container">
+{% for block in section.blocks %}
+  <div class="office-address">
+  <h3>{{ block.settings.address_title }}</h3>
+  <ul class="address-list-item">
+    <li><span class="office-icon">{% render 'icon-map' %}</span> {{ block.settings.physical_address }}</li>
+    <li><span class="office-icon">{% render 'icon-phone' %}</span> {{ block.settings.phone_number }}</li>
+    <li><span class="office-icon">{% render 'icon-envelope' %}</span> {{ block.settings.mail_address }}</li>
+    <li><span class="office-icon">{% render 'icon-globe' %}</span> {{ block.settings.website | link_to: block.settings.website }}</li>
+  </ul>
+  <div class="map_location">
+    {{ block.settings.map_location }}
+  </div>
+  </div>
+{% endfor %}
+  
+</div>
+{% schema %}
+{
+  "name": "Contact Us",
+  "tag": "section",
+  "class": "inaithiram-contact container",
+  "settings": [
+    {
+      "type":"header",
+      "content": "Contact us"
+    },
+    {
+      "type": "richtext",
+      "id": "paragraph",
+      "label": "Paragraph"
+    },
+    {
+      "type": "header",
+      "content": "Write Us"
+    },
+    {
+      "type":"text",
+      "id":"write_us",
+      "label": "Write Us Title"
+    },
+    {
+      "type": "url",
+      "id": "feedback_url",
+      "label": "Feedback URL"
+    },
+    {
+      "type":"textarea",
+      "id": "feedback_content",
+      "label": "Feedback Content"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Address",
+      "type": "address",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Address Title"
+        },
+        {
+          "type":"text",
+          "id": "address_title",
+          "label": "Address Title"
+        },
+        {
+          "type": "textarea",
+          "id": "physical_address",
+          "label": "Physical Address"
+        },
+        {
+          "type": "text",
+          "id": "phone_number",
+          "label": "Phone Number"
+        },
+        {
+          "type": "text",
+          "id": "mail_address",
+          "label": "Mail Address"
+        },
+        {
+          "type": "url",
+          "id": "website",
+          "label": "Website"
+        },
+        {
+          "type": "html",
+          "id": "map_location",
+          "label": "Map Location"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

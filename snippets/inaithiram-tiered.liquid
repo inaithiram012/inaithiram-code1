@@ -1,0 +1,27 @@
+<h4 class="description-title">Buy At Discounted Prices</h4>
+<table class="table table-bordered">
+  {% for tiered_items in tiered_list %}
+    {% assign tiered_item = tiered_items | split: '|' %}
+    {% if forloop.first %}
+      <tr>
+        {% for item_text in tiered_item %}
+          <th class="text-center">{{ item_text }}</th>
+          {% assign text_converted = item_text | downcase %}
+          {% if text_converted contains 'price' %}
+            {% assign price_index = forloop.index0 %}
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% else %}
+      <tr>
+        {% for item_text in tiered_item %}
+          {% if forloop.index0 == price_index %}
+            <td class="text-center">₹ {{ item_text }}</td>
+          {% else %}
+            <td class="text-center inaithiram-price-number">{{ item_text }}</td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endif %}
+  {% endfor %}
+</table>

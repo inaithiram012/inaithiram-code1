@@ -1,0 +1,18 @@
+{% assign final_banners = product.metafields.custom.final_banner.value %}
+{% assign final_text = product.metafields.custom.final_banner_content | split: '|' %}
+{% if final_banners or final_text %}
+  <div>
+    {% render 'final-banner', final_banner: final_banners, banner_text: final_text %}
+  </div>
+{% endif %}
+{% schema %}
+{
+  "name": "Product Final Banner",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Final Banner"
+    }
+  ]
+}
+{% endschema %}

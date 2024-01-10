@@ -1,0 +1,432 @@
+{% assign upsell_products = product.metafields.custom.upsell.value %}
+{% assign min_qty = product.metafields.custom.min_order_qty %}
+{% assign max_qty = product.metafields.custom.max_order_qty %}
+{% assign discount_price = product.metafields.custom.discount_price | times: 100 %}
+{% assign discount_on = section.settings.discount_on %}
+{% for upsell_product in upsell_products %}
+  {% assign upsell_price = upsell_product.selected_or_first_available_variant.price %}
+{% endfor %}
+{% assign total_price = product.selected_or_first_available_variant.price | plus: upsell_price %}
+{% assign bundle_price = total_price | minus: discount_price %}
+
+{% if discount_price and upsell_products %}
+  <div class="upsell-container container">
+    <h4>{{ section.settings.buy_it_together }}</h4>
+    <div class="row g-4">
+      <!-- Current Item -->
+      <div class="product-image ui-container col-lg-3 col-md-6 col-6">
+        {{ product.featured_image | image_url: width: master | image_tag: width: '100%' }}
+        <p class="mb-2 upsell-title">
+          <span>This item: </span><a href="{{ product.url }}">{{ product.title }}</a>
+        </p>
+        {% if product.variants.size > 1 %}
+          <select name="id" class="mb-2 buyit_select">
+            {% for variant in product.variants %}
+              <option
+                value="{{ variant.id }}"
+                data-availability="{% if variant.inventory_quantity >= 1 %}true{% else %}false{% endif %}"
+              >
+                {% for option in variant.options %}
+                  {{ option }}
+                {% endfor %}
+              </option>
+            {% endfor %}
+          </select>
+          {% for variant in product.variants %}
+            <p
+              class="mb-2 money"
+              data-variant="{{ variant.id }}"
+              data-inaithiram-price="{{ variant.price | divided_by: 100 }}"
+            >
+              {{ variant.price | money_with_currency }}
+            </p>
+          {% endfor %}
+        {% else %}
+          <input
+            type="hidden"
+            name="variantid"
+            value="{{ product.selected_or_first_available_variant.id }}"
+            data-availability="{% if product.selected_or_first_available_variant.inventory_quantity >= 1 %}true{% else %}false{% endif %}"
+          >
+          <p
+            class="mb-2 money"
+            data-variant="{{ product.selected_or_first_available_variant.id }}"
+            data-inaithiram-price="{{ product.selected_or_first_available_variant.price | divided_by: 100 }}"
+            data-upsell-price="{{ product.selected_or_first_available_variant.price | divided_by: 100 }}"
+          >
+            {{ product.selected_or_first_available_variant.price | money_with_currency }}
+          </p>
+        {% endif %}
+        <input type="hidden" name="quantity" value="{{ min_qty }}">
+        <p class="text-danger availmessage">Out of Stock</p>
+        <input
+          type="checkbox"
+          name="current-product"
+          class="upsell-checkbox active-productbox"
+        >
+      </div>
+
+      <!-- Upsell Products -->
+      {% for upsell in upsell_products %}
+        {% assign upsell_min = upsell.metafields.custom.min_order_qty %}
+        <div class="upsell-image ui-container col-lg-3 col-md-6 col-6">
+          {{ upsell.featured_image | image_url: width: master | image_tag: width: '100%' }}
+          <p class="mb-2 upsell-title">
+            <a href="{{ upsell.url }}">{{ upsell.title }}</a>
+          </p>
+          {% if upsell.variants.size > 1 %}
+            <select name="id" class="mb-2 buyit_select">
+              {% for variant in upsell.variants %}
+                <option
+                  value="{{ variant.id }}"
+                  data-availability="{% if variant.inventory_quantity >= 1 %}true{% else %}false{% endif %}"
+                >
+                  {% for option in variant.options %}
+                    {{ option }}
+                  {% endfor %}
+                </option>
+              {% endfor %}
+            </select>
+            {% for variant in upsell.variants %}
+              <p
+                class="mb-2 money"
+                data-variant="{{ variant.id }}"
+                data-inaithiram-price="{{ variant.price | divided_by: 100 }}"
+              >
+                {{ variant.price | money_with_currency }}
+              </p>
+            {% endfor %}
+          {% else %}
+            <input
+              type="hidden"
+              name="variantid"
+              value="{{ upsell.selected_or_first_available_variant.id }}"
+              data-availability="{% if upsell.selected_or_first_available_variant.inventory_quantity >= 1 %}true{% else %}false{% endif %}"
+            >
+            <p
+              class="mb-2 money"
+              data-variant="{{ upsell.selected_or_first_available_variant.id }}"
+              data-inaithiram-price="{{ upsell.selected_or_first_available_variant.price | divided_by: 100 }}"
+              data-upsell-price="{{ upsell.selected_or_first_available_variant.price | divided_by: 100 }}"
+            >
+              {{ upsell.selected_or_first_available_variant.price | money_with_currency }}
+            </p>
+          {% endif %}
+          <input type="hidden" name="quantity" value="{{ upsell_min }}">
+          <p class="text-danger availmessage">Out of Stock</p>
+          <input
+            type="checkbox"
+            name="upsell-product-{{ forloop.index }}"
+            class="upsell-checkbox upselled-box"
+          >
+        </div>
+      {% endfor %}
+
+      <div class="col-lg-3 col-md-12 col-12 upsell-tables">
+        <div class="action-container">
+          <p class="upsell-discount">
+            Extra Discount
+            <span data-discount-price="{% if discount_on == 'price' %}{{ discount_price | money_with_currency }}{% endif %}">
+              {%- if discount_on == 'percentage' -%}
+                {{- discount_percentage }}%
+              {% else -%}
+                ₹ {{ discount_price | money_with_currency -}}
+              {%- endif -%}
+            </span>
+            Off
+          </p>
+          <table>
+            <tbody>
+              <tr>
+                <td>Total Price</td>
+                <td>= ₹</td>
+                <td data-total-price>{{ total_price | money_with_currency }}</td>
+              </tr>
+              <tr>
+                <td>Bundle Offer Price</td>
+                <td>= ₹</td>
+                <td data-bundle-price>{{ bundle_price | money_with_currency }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="mt-3 text-center">
+            <button class="upsell_addtocart w-100" type="submit">Add both to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Custom Upsell Container
+    const upsellBox = document.querySelectorAll(".upsell-checkbox");
+    const activeBox = document.querySelector(".active-productbox");
+    const upselled = document.querySelectorAll(".upselled-box");
+    activeBox.checked = "true";
+    const upsellAdd = document.querySelector(".upsell_addtocart");
+    const defaultBox = activeBox.parentElement;
+    let variantId;
+
+    if(defaultBox.querySelector("select")){
+      variantId = defaultBox.querySelector("select").value;
+    }else{
+      variantId = defaultBox.querySelector("input[name='variantid']").value;
+    }
+
+    let formData = {
+      items: [
+        {
+          id: variantId,
+          quantity: {{ min_qty }},
+        },
+      ],
+    };
+
+    function buttonDisabled(){
+      const checkboxValue = [];
+       upsellBox.forEach(box => {
+            checkboxValue.push(box.checked);
+          });
+          if(checkboxValue.includes(false)){
+            upsellAdd.setAttribute('disabled', true);
+          }else{
+            upsellAdd.removeAttribute('disabled');
+          }
+    }
+
+    buttonDisabled();
+
+    const totalContainer = document.querySelector("td[data-total-price]");
+    const bundleContainer = document.querySelector("td[data-bundle-price]");
+    const discountPrice = document
+      .querySelector("span[data-discount-price]")
+      .getAttribute("data-discount-price");
+    let totalPrice = 0;
+    let bundlePrice = 0;
+
+    upsellBox.forEach((item) => {
+      const boxContainer = item.parentElement;
+      const selectAll = boxContainer.querySelectorAll("select option");
+      let selectValue = boxContainer.querySelector("select");
+      const currentPrices = boxContainer.querySelectorAll("p[data-variant]");
+      if (selectAll.length > 0) {
+        const varIds = [];
+        selectAll.forEach((item) => {
+          if (!varIds.includes(item.value)) {
+            varIds.push(item.value);
+          }
+        });
+        currentPrices.forEach((item) => {
+          if (item.getAttribute("data-variant") == selectValue.value) {
+            item.style.display = "block";
+            item.setAttribute(
+              "data-upsell-price",
+              item.getAttribute("data-inaithiram-price")
+            );
+          } else {
+            item.style.display = "none";
+            item.removeAttribute("data-upsell-price");
+          }
+        });
+
+        selectAll.forEach((item) => {
+          const tempVariant = selectValue.value;
+          if (
+            item.getAttribute("data-availability") != "true" &&
+            tempVariant == item.value
+          ) {
+            const currentBox = boxContainer.querySelector("input[type=checkbox]");
+            const unavailmsg = boxContainer.querySelector(".availmessage");
+            unavailmsg.style.display = "block";
+            currentBox.setAttribute("disabled", true);
+          }
+          if (
+            item.getAttribute("data-availability") == "true" &&
+            tempVariant == item.value
+          ) {
+            const currentBox = boxContainer.querySelector("input[type=checkbox]");
+            const unavailmsg = boxContainer.querySelector(".availmessage");
+            unavailmsg.style.display = "none";
+            currentBox.removeAttribute("disabled");
+          }
+        });
+
+        item.addEventListener("change", () => {
+          if (!activeBox.checked || activeBox.disabled) {
+            upselled.forEach((item) => {
+              item.checked = false;
+            });
+          }
+          if (item.checked) {
+            const findProduct = formData.items.find((item) =>
+              varIds.includes(item.id)
+            );
+            var currentVariant = boxContainer.querySelector("select").value;
+            selectAll.forEach((item) => {
+              if (!varIds.includes(item.value)) {
+                varIds.push(item.value);
+              }
+            });
+            if (!findProduct) {
+              formData.items.push({ id: currentVariant, quantity: {{upsell_min}} });
+            } else {
+              formData.items.forEach((item) => {
+                if (varIds.includes(item.id)) {
+                  item.id = currentVariant;
+                }
+              });
+            }
+          } else {
+            formData.items.forEach((item, index) => {
+              if (varIds.includes(item.id)) {
+                formData.items.splice(index, 1);
+              }
+            });
+          }
+          buttonDisabled();
+        });
+
+        selectValue.addEventListener("change", () => {
+          currentPrices.forEach((item) => {
+            if (item.getAttribute("data-variant") == selectValue.value) {
+              item.style.display = "block";
+              item.setAttribute(
+                "data-upsell-price",
+                item.getAttribute("data-inaithiram-price")
+              );
+            } else {
+              item.style.display = "none";
+              item.removeAttribute("data-upsell-price");
+            }
+          });
+          const findProduct = formData.items.find((item) =>
+            varIds.includes(item.id)
+          );
+          selectAll.forEach((item) => {
+            if (!varIds.includes(item.value)) {
+              varIds.push(item.value);
+            }
+          });
+          if (!findProduct) {
+            currentVariant = boxContainer.querySelector("select").value;
+            formData.items.push({ id: currentVariant, quantity: {{upsell_min}} });
+          } else {
+            formData.items.forEach((item) => {
+              if (varIds.includes(item.id)) {
+                currentVariant = boxContainer.querySelector("select").value;
+                item.id = currentVariant;
+              }
+            });
+          }
+          selectAll.forEach((item) => {
+            if (
+              item.getAttribute("data-availability") != "true" &&
+              currentVariant == item.value
+            ) {
+              const currentBox = boxContainer.querySelector("input[type=checkbox]");
+              const unavailmsg = boxContainer.querySelector(".availmessage");
+              unavailmsg.style.display = "block";
+              currentBox.setAttribute("disabled", true);
+              currentBox.checked = false;
+            }
+            if (
+              item.getAttribute("data-availability") == "true" &&
+              currentVariant == item.value
+            ) {
+              const currentBox = boxContainer.querySelector("input[type=checkbox]");
+              const unavailmsg = boxContainer.querySelector(".availmessage");
+              unavailmsg.style.display = "none";
+              currentBox.removeAttribute("disabled");
+            }
+          });
+          const getTotalPrice = document.querySelectorAll("p[data-upsell-price]");
+          getTotalPrice.forEach((item) => {
+            totalPrice += parseInt(item.getAttribute("data-upsell-price"));
+          });
+          totalContainer.innerText = totalPrice;
+          totalContainer.setAttribute("data-total-container", totalPrice);
+          bundleContainer.innerText = totalPrice - parseInt(discountPrice);
+          totalPrice = 0;
+          if (!activeBox.checked || activeBox.disabled) {
+            upselled.forEach((item) => {
+              item.checked = false;
+            });
+          }
+          buttonDisabled();
+        });
+
+      } else {
+        const variantId = boxContainer.querySelector('input[name="variantid"]');
+        const unavailmsg = boxContainer.querySelector(".availmessage");
+        if (variantId.getAttribute("data-availability") == "true") {
+          unavailmsg.style.display = "none";
+        } else {
+          unavailmsg.style.display = "block";
+        }
+
+        item.addEventListener("change", () => {
+          if (!activeBox.checked || activeBox.disabled) {
+            upselled.forEach((item) => {
+              item.checked = false;
+            });
+          }
+          if (item.checked) {
+            const currentVariant = variantId.value;
+            const findProduct = formData.items.find((item) => {
+              item.id == currentVariant;
+            });
+            if (!findProduct) {
+              formData.items.push({ id: currentVariant, quantity: {{upsell_min}} });
+            }
+          } else {
+            const currentVariant = variantId.value;
+            formData.items.forEach((item, index) => {
+              if (item.id == currentVariant) {
+                formData.items.splice(index, 1);
+              }
+            });
+          }
+          buttonDisabled();
+        });
+      }
+    });
+
+    upsellAdd.addEventListener('click', ()=>{
+      addCart(formData);
+    })
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Buy It Together",
+  "settings": [
+    {
+      "type":"text",
+      "id": "buy_it_together",
+      "label": "Section Title"
+    },
+    {
+      "type": "select",
+      "id": "discount_on",
+      "label": "Discount Shown in",
+      "options": [
+        {
+          "value": "percentage",
+          "label": "Percentage"
+        },
+        {
+          "value": "price",
+          "label": "Price in Rupees"
+        }
+      ],
+      "default": "price"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Inaithiram Upsell"
+    }
+  ]
+}
+{% endschema %}

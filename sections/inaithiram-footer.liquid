@@ -1,0 +1,75 @@
+<script
+  type="application/json"
+  data-section-id="{{ section.id }}"
+  data-section-type="static-footer">
+</script>
+<div class="footer-navigation">
+  {% if section.blocks.size %}
+    {% render 'footer-block' for section.blocks as block %}
+  {% endif %}
+  <div class="business-info">
+    <h2 class="site-footer-block-title">Registered Office</h2>
+    <address>
+      {{ section.settings.address }}
+    </address>
+    <p>GSTIN: {{ section.settings.gstno }}</p>
+    <div class="footer-contact">
+      <p>Email us: <a href="mailto:{{ section.settings.email }}" class="footer-link">{{ section.settings.email }}</a></p>
+      <p>Phone: <a href="tel:{{ section.settings.mobile }}" class="footer-link mobile_number">{{ section.settings.mobile }}</a></p>     
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Inaithiram Footer",
+    "tag": "section",
+    "class": "inaithiram-footer",
+    "settings": [
+      {
+        "type": "text",
+        "id": "email",
+        "label": "Email ID"
+      },
+      {
+        "type": "text",
+        "id": "mobile",
+        "label": "Mobile"
+      },
+      {
+        "type": "richtext",
+        "id": "address",
+        "label": "Address"
+      },
+      {
+        "type": "text",
+        "id": "gstno",
+        "label": "GST No"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "menu",
+        "name": "t:sections.footer.blocks.menu.name",
+        "settings":[
+          {
+            "type": "link_list",
+            "id": "menu",
+            "label": "t:sections.footer.blocks.menu.menu.label",
+            "default": "main-menu","info": "t:sections.footer.blocks.menu.menu.info"
+          }
+        ]
+      },
+      {
+        "type": "dynamic_collection",
+        "name": "Dynamic Collection",
+        "settings":[
+          {
+            "type": "text",
+            "id": "collection_title",
+            "label": "Footer Block Title"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

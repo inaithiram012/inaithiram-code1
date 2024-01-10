@@ -1,0 +1,56 @@
+<div class="about-container">
+  <h2>{{ section.settings.inaithiram_value }}</h2>
+  <div class="card-container">
+    {% for block in section.blocks %}
+      <div class="second-card">
+        <h4>{{ block.settings.value_title }}</h4>
+        <p>{{ block.settings.value_content }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% schema %}
+ {
+	"name": "Inaithiram Values",
+	"tag": "section",
+	"class": "about-inaithiram container",
+	"settings": [{
+			"type": "header",
+			"content": "Inaithiram Values"
+		},
+		{
+			"type": "text",
+			"id": "inaithiram_value",
+			"label": "Section Title"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Value",
+			"type": "values",
+			"settings": [{
+					"type": "text",
+					"id": "value_title",
+					"label": "Value Title"
+				},
+				{
+					"type": "textarea",
+					"id": "value_content",
+					"label": "Value Content"
+				}
+			]
+		},
+        {
+          "name": "Code of Conduct",
+          "type": "conduct",
+          "settings": [
+            {
+              "type": "richtext",
+              "id": "code_of_conduct",
+              "label": "List of Points"
+            }
+          ]
+        }
+	]
+}
+{% endschema %}

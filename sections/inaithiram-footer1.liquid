@@ -1,0 +1,185 @@
+<script
+  type="application/json"
+  data-section-id="{{ section.id }}"
+  data-section-type="static-footer"
+></script>
+
+<div class="footer1-container">
+  <div class="logo-section">
+    <img src="{{ section.settings.logo | image_url: height: 120 }}" class="footer-logo" alt="inaithiram-logo">
+  </div>
+  <div class="newsletter-container">
+    {% if section.blocks.size %}
+      {% render 'footer-block' for section.blocks as block %}
+    {% endif %}
+  </div>
+  <div class="social-icons1">
+    <h2 class="site-footer-block-title">Connect & Follow Us in...</h2>
+    <ul class="list-unstyled d-flex">
+      {% if section.settings.facebook != empty %}
+        <li class="social-link1">
+          <a href="{{ section.settings.facebook }}" target="_blank" aria-label="Follow us on Facebook">{% render 'icon-facebook' %}</a>
+        </li>
+      {% endif %}
+      {% if section.settings.instagram != empty %}
+        <li class="social-link1">
+          <a href="{{ section.settings.instagram }}" target="_blank" aria-label="Follow us on Instagram">{% render 'icon-instagram' %}</a>
+        </li>
+      {% endif %}
+      {% if section.settings.youtube != empty %}
+        <li class="social-link1">
+          <a href="{{ section.settings.youtube }}" target="_blank" aria-label="Follow us on Youtube">{% render 'icon-youtube' %}</a>
+        </li>
+      {% endif %}
+      {% if section.settings.pinterest != empty %}
+        <li class="social-link1">
+          <a href="{{ section.settings.pinterest }}" target="_blank" aria-label="Follow us on Pinterest">{% render 'icon-pinterest' %}</a>
+        </li>
+      {% endif %}
+      {% if section.settings.twitter != empty %}
+        <li class="social-link1">
+          <a href="{{ section.settings.twitter }}" target="_blank" aria-label="Follow us on Twitter">{% render 'icon-twitter' %}</a>
+        </li>
+      {% endif %}
+      {% if section.settings.whatsapp != empty %}
+        <li class="social-link1">
+          <a href="{{ section.settings.whatsapp }}" target="_blank" aria-label="Chat with us on Whatsapp">{% render 'icon-whatsapp1' %}</a>
+        </li>
+      {% endif %}
+      {% if section.settings.telegram != empty %}
+        <li class="social-link1">
+          <a href="{{ section.settings.telegram }}" target="_blank" aria-label="Chat with us on Telegram">{% render 'icon-telegram' %}</a>
+        </li>
+      {% endif %}
+      {% if section.settings.linkedin != empty  %}
+        <li class="social-link1">
+          <a href="{{ section.settings.linkedin }}" target="_blank" aria-label="Connect with us on Linkedin">{% render 'icon-linkedin' %}</a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+<div class="footer2-container">
+  <div class="footer2-content">
+    <h2 class="site-footer-block-title">We are Officially Recognised by</h2>
+    <img src="{{ section.settings.recognised | image_url: height: 125 }}" alt="Recognised">
+  </div>
+  <div class="footer2-content">
+    <h2 class="site-footer-block-title">We Accept</h2>
+    <img src="{{ section.settings.accept | image_url: height: 125 }}" alt="accept">
+  </div>
+</div>
+<div class="footer2-container footer-3">
+  <div class="footer2-content">
+    {% if template.name == 'index' %}
+      <h1 class="site-footer-block-title home-page">{{ section.settings['footer2-heading'] }}</h1>
+    {% else %}
+      <h2 class="site-footer-block-title">{{ section.settings['footer2-heading'] }}</h2>
+    {% endif %}
+    <p class="mb-0">{{ section.settings['footer2-content1'] }}</p>
+  </div>
+  <div class="footer2-content">
+    <p class="mb-0;">{{ section.settings['footer2-content2'] }}</p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Inaithiram Footer 1",
+  "tag": "section",
+  "class": "inaithiram-footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "recognised",
+      "label": "Recognised By"
+    },
+    {
+      "type": "image_picker",
+      "id": "accept",
+      "label": "Accept"
+    },
+    {
+      "type": "text",
+      "id": "facebook",
+      "label": "Facebook"
+    },
+    {
+      "type": "text",
+      "id": "instagram",
+      "label": "Instagram"
+    },
+    {
+      "type": "text",
+      "id": "youtube",
+      "label": "Youtube"
+    },
+    {
+      "type": "text",
+      "id": "pinterest",
+      "label": "Pinterest"
+    },
+    {
+      "type": "text",
+      "id": "twitter",
+      "label": "Twitter"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp",
+      "label": "WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "telegram",
+      "label": "Telegram"
+    },
+    {
+      "type": "text",
+      "id": "linkedin",
+      "label": "Linkedin"
+    },
+    {
+      "type":"text",
+      "id": "footer2-heading",
+      "label":"Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "footer2-content1",
+      "label": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "footer2-content2",
+      "label": "Additional Conent"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "newsletter",
+      "name": "t:sections.footer.blocks.newsletter.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:sections.footer.blocks.newsletter.title.label",
+          "default": "Subscribe"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:sections.footer.blocks.newsletter.text.label",
+          "default": "<p>Invite customers to join your mailing list.</p>"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

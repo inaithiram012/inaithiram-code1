@@ -1,0 +1,40 @@
+{% assign product_url = shop.url | append: '/products/' | append: product.handle %}
+<div class="social-media">
+  <button class="social-share">{% render 'icon-share' %}</button>
+  <div class="social-media_list">
+    <ul>
+      <li>
+        <p onclick="window.open('mailto:?subject=Check out this product!&body=check out this product: {{shop.url}}/products/{{product.url}}','_blank')"
+          >{% render 'icon-envelope' %}</p
+        >
+      </li>
+      <li>
+        <p 
+          onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{ product_url | uri_escape }}', '_blank', 'top=0, left=0, width=500, height=500')"
+          >{% render 'icon-facebook' %}</p
+        >
+      </li>
+      <li>
+        <p
+          onclick="window.open('https://www.linkedin.com/shareArticle?url={{product_url}}&title={{product.title}}&summary={{product.description}}','_blank' ,'top=0, left=0, width=500, height=500')"
+          >{% render 'icon-linkedin' %}</p
+        >
+      </li>
+      <li>
+        <p
+          onclick="window.open('https://pinterest.com/pin/create/button/?url={{ shop.url }}{{ product.url }}&media={{ product.featured_image.src | img_url: '1024x1024' }}&description={{ product.title }}','_blank','top=0, left=0, width=500, height=500')"
+          >{% render 'icon-pinterest' %}</p
+        >
+      </li>
+      <li>
+        <p
+          onclick="window.open('https://twitter.com/intent/tweet?text=Check out this product: {{ shop.url }}{{ product.url }}','_blank','top=0,left=0,width=500, height=500')"
+          >{% render 'icon-twitter' %}</p
+        >
+      </li>
+      <li>
+        <p onclick="window.open('https://api.whatsapp.com/send/?text={{ shop.url }}{{ product.url }}&type=custom_url&app_absent=0','_blank')">{% render 'icon-whatsapp1' %}</p>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+{% if product.variants.size > 1 %}
+  {% for option in product.options_with_values %}
+    {% assign smallcase = option.name | downcase %}
+    {% if smallcase != 'color' %}
+      <div class="iv_dropdowns">
+        <span>{{ smallcase | capitalize }}: </span>
+        <select class="inaithiram_dropdown_selector" onchange="selectDropdown(this)" data-dropdown={{ option.name }}>
+          {% for value in option.values %}
+            <option value="{{ value }}">{{ value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}

@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="col-lg-12" >
+    {% for banner in final_banner %}
+      <img src="{{ banner | image_url: width: master }}" class="{% if forloop.first %}banner-desktop{% else %}banner-mobile{% endif %}" />
+    {% endfor %}
+    {% if banner_text %}
+    <h4 class="my-3">{{ banner_text[0] }}</h4>
+    <p>
+      {{ banner_text[1] }}
+    </p>
+    {% endif %}
+  </div>
+</div>

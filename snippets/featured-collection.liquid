@@ -1,0 +1,228 @@
+{% comment %}
+@param section [section] Shopify section to reference
+
+@param selected_collection [Collection] Collection to display.
+If falsey, onboarding content will be displayed.
+
+@param title_card_source [String] One of `block` or `simple`.
+Blocks will pull detailed title cards from title_card_block, simple will display a simplified version. If no source is provided, title cards will not be displayed.
+
+@param title_card_block [Block] Block to reference for title card settings
+
+@param item_count [Integer] Total number of items (product cards + title cards)
+
+@param title [String] Markup to output for collection title
+
+@param disable_cta_button [Boolean]  If true, CTA button will not be rendered.
+{% endcomment %}
+
+{% if selected_collection %}
+  {% assign products = selected_collection.products %}
+{% else %}
+  {% assign onboarding = true %}
+{% endif %}
+
+{% assign product_count = section.settings.product_count %}
+
+{% comment %}
+If there are more than 4 products to display, we always
+show the slideshow layout.
+{% endcomment %}
+{% if section.settings.layout == 'slideshow' and item_count > 4 %}
+  {% assign layout = 'slideshow' %}
+{% else %}
+  {% assign layout = 'grid' %}
+{% endif %}
+
+{% if title_card_source %}
+  {% capture title_card %}
+    <li
+      class='
+      productgrid--item
+      featured-collection__title-card
+      {% if title_card_source == 'block' %}
+        featured-collection__title-card--horizontal-size-{{ horizontal_size }}
+        {% unless title_card_block.settings.image %}featured-collection__title-card--placeholder{% endunless %}
+      {% endif %}
+      "
+      {% if title_card_source == 'block' %}
+      {% if title_card_block.settings.image %}
+      {% render 'rimg', img: title_card_block.settings.image size: '500x750', crop: 'center', background: true, lazy: true %}
+      {% endif %}
+      {{ title_card_block.shopify_attributes }}
+      {% endif %}>
+      {% if title_card_source == 'block' %}
+        {% if title_card_block.settings.image %}
+          {%
+             render 'rimg',
+             img: title_card_block.settings.image
+             size: '500x750',
+             crop: 'center',
+             canvas: true,
+             lazy: true %}
+        {% else %}
+          {{ 'collection-5' | placeholder_svg_tag: 'placeholder--image' }}
+        {% endif %}
+      {% endif %}
+
+      <a
+        class="
+                  featured-collection__title-card-outer
+                  featured-collection__title-card-outer--align-{{ title_card_block.settings.text_alignment | default: 'center-center' }}
+                "
+        {% if selected_collection.url != blank %}
+        href="{{ selected_collection.url }}"
+        {% endif %}>
+        <div class="featured-collection__title-card-inner">
+          {% if onboarding %}
+            <span class="featured-collection__title-card-pre-heading">
+              {{ 'onboarding.featured_collection.subtitle' | t }}
+            </span>
+
+            <span class="featured-collection__title-card-heading">
+              {{ 'onboarding.featured_collection.title' | t }}
+            </span>
+          {% elsif title_card_source == 'block' %}
+            {% unless title_card_block.settings.pre_heading == blank %}
+              <span class="featured-collection__title-card-pre-heading">
+                {{ title_card_block.settings.pre_heading }}
+              </span>
+            {% endunless %}
+
+            {% unless title_card_block.settings.heading == blank %}
+              <span class="featured-collection__title-card-heading">
+                {{ title_card_block.settings.heading }}
+              </span>
+            {% endunless %}
+
+            {% unless title_card_block.settings.cta_label == blank %}
+              <span class="featured-collection__title-card-button">
+                {{ title_card_block.settings.cta_label }}
+                {% render 'icon-library', id: 'icon-signpost-arrow' %}
+              </span>
+            {% endunless %}
+          {% elsif title_card_source == 'simple' %}
+            {% unless section.settings.cta_label == blank %}
+              <span class="featured-collection__title-card-pre-heading">
+                {{ section.settings.cta_label }}
+              </span>
+            {% endunless %}
+
+            <span class="featured-collection__title-card-heading">
+              {{ selected_collection.title }}
+            </span>
+          {% endif %}
+        </div>
+      </a>
+    </li>
+  {% endcapture %}
+{% endif %}
+<div class="container-fluid deals-section">
+  <div class="row py-3">
+    <div class="col-lg-4 col-12">
+      <div>{{ title }}</div>
+    </div>
+    <div class="col-lg-8 col-12 d-lg-flex d-sm-block {% if section.settings.show_dynamic_counter %} justify-content-between {% else %} justify-content-end {% endif %} align-items-center">
+    {% if section.settings.show_dynamic_counter %}
+      <div>
+        <p class="m-0">Ending in -
+          <span id="e-days"></span>
+          days :
+          <span id="e-hours"></span>
+          hours :
+          <span id="e-minutes"></span>
+          minutes :
+          <span id="e-seconds"></span>
+          seconds</p>
+      </div>
+      {% endif %}
+      <div>
+        <a href="{{ section.settings.offers_deals.url }}">{{ section.settings.collection_link_text }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="featured-collection__container" data-featured-collection>
+
+
+  <ul
+    class="home-section--content featured-collection__content"
+    data-content
+    data-layout="{{ layout }}">
+    {% if title_card_block.type == 'title_card' %}
+      {{ title_card }}.
+    {% endif %}
+
+    {% for p in products limit: product_count %}
+      {%
+         render 'product-grid-item',
+         product: p, %}
+    {% endfor %}
+
+    {% if title_card_block.type == 'view_all_card' or title_card_source == 'simple' %}
+      {{ title_card }}
+    {% endif %}
+  </ul>
+
+  {% unless disable_cta_button %}
+    {% if section.settings.cta_label != blank %}
+      <a class="
+                  button-{{ section.settings.cta_button_style }}
+                  featured-collection__button
+                " {% if selected_collection.url != blank %}href="{{ selected_collection.url }}"{% endif %}>
+        {{ section.settings.cta_label | escape }}
+      </a>
+    {% endif %}
+  {% endunless %}
+</section>
+{% if section.settings.show_dynamic_counter %}
+<script>
+  function eprintDate() {
+    const days = document.getElementById("e-days");
+    const hours = document.getElementById("e-hours");
+    const minutes = document.getElementById("e-minutes");
+    const seconds = document.getElementById("e-seconds");
+    const printDate = document.getElementById("e-date");
+    const currentDate = new Date();
+
+    const eventDate = new Date("{{ section.settings.date_picker }}");
+
+    const difference = eventDate - currentDate;
+
+    var printDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+    var printHours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    var printMinutes = Math.floor((difference / (1000 * 60)) % 60);
+    var printSeconds = Math.floor((difference / 1000) % 60);
+
+    if (printDays.toString().length < 2) {
+      printDays = "0" + printDays;
+    }
+    if (printHours.toString().length < 2) {
+      printHours = "0" + printHours;
+    }
+    if (printMinutes.toString().length < 2) {
+      printMinutes = "0" + printMinutes;
+    }
+    if (printSeconds.toString().length < 2) {
+      printSeconds = "0" + printSeconds;
+    }
+
+    if (printDays <= 0 && printHours <= 0 && printMinutes <= 0) {
+      printSeconds = "00";
+      printMinutes = "00";
+      printHours = "00";
+      printDays = "00";
+    }
+
+    if (days) {
+
+      days.innerText = printDays;
+      hours.innerText = printHours;
+      minutes.innerText = printMinutes;
+      seconds.innerText = printSeconds;
+    }
+
+  }
+  setInterval(eprintDate, 1000);
+</script>
+{% endif %}

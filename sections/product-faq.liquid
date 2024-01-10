@@ -1,0 +1,34 @@
+{% assign faq_list = product.metafields.custom.faqs.value %}
+<h5>Frequently Asked Customer Questions & Answers - FAQs</h5>
+<div class="faq-section">
+  {% for faq in faq_list %}
+    <div class="faq-container {% if forloop.first %} faq-active {% endif %}">
+      <p class="question">
+        <span>{{ faq.question }}</span> <span class="faq-arrow">{% render 'icon-chevron' %}</span>
+      </p>
+      <p class="answer">{{ faq.answer }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Product FAQs",
+  "class": "container",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Product FAQs"
+    }
+  ]
+}
+{% endschema %}
+
+{% javascript %}
+  const faqQuestion = document.querySelectorAll('.faq-section .faq-container');
+  faqQuestion.forEach((question) => {
+    question.addEventListener('click', () => {
+      question.classList.toggle('faq-active');
+    });
+  });
+{% endjavascript %}

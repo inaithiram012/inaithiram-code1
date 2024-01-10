@@ -1,0 +1,85 @@
+{% if product.metafields.custom.interchange_text or product.metafields.custom.interchange_image.value %}
+  {% assign inner_text = product.metafields.custom.interchange_text | newline_to_br | split: '<br />' %}
+  {% assign first_para = inner_text[0] %}
+  {% assign second_para = inner_text[1] %}
+  {% assign first_content = first_para | split: '|' %}
+  {% assign first_para_content = first_content[1] | split: '@' %}
+  {% assign second_content = second_para | split: '|' %}
+  {% assign second_para_content = second_content[1] | split: '@' %}
+  {% assign interchange_image = product.metafields.custom.interchange_image.value %}
+  {% assign table_title = product.metafields.custom.table_title %}
+  {% assign table_content = product.metafields.custom.table_text | newline_to_br | split: '<br />' %}
+  {% assign table_images = product.metafields.custom.table_images.value %}
+
+  <div class="container">
+    <div class="row py-2 align-items-center border">
+      <div class="col-lg-3 col-12">
+        {% if interchange_image != empty %}
+          {% for image in interchange_image %}
+            {% if forloop.first %}
+              {{ image | image_url: width: master | image_tag: width: '100%', height: '100%' }}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="col-lg-9 col-12">
+        <h6>{{ first_content[0] }}</h6>
+        <ul>
+          {% for list_content in first_para_content %}
+            <li>{{ list_content }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="row py-2 align-items-center border">
+      <div class="col-lg-9 col-12">
+        <h6>{{ second_content[0] }}</h6>
+        <ul>
+          {% for list_content in second_para_content %}
+            <li>{{ list_content }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-lg-3 col-12">
+        {% if interchange_image != empty %}
+          {% for image in interchange_image %}
+            {% if forloop.last %}
+              {{ image | image_url: width: master | image_tag: width: '100%', height: '100%' }}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% for block in section.blocks %}
+  {% case block.type %}
+    {% when 'additional-table' %}
+      {% if table_content and table_images %}
+        {% render 'additional-table',
+          table_title: table_title,
+          table_content: table_content,
+          table_images: table_images
+        %}
+      {% endif %}
+  {% endcase %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Interchange Table",
+  "class": "interchange-table",
+  "tag": "section",
+  "settings": [],
+  "blocks":[
+    {
+      "name": "Additional Table",
+      "type": "additional-table"
+    }
+  ],
+  "presets": [{
+    "name": "Interchange Table"
+  }
+  ]
+}
+{% endschema %}
